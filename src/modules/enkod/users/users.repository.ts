@@ -1,43 +1,39 @@
-import { IPurchaseRepository } from './purchases.repository.interface';
 import { inject, injectable } from 'inversify';
-import { PurchaseModel, UserModel } from '@prisma/client';
+import { UserExceptionModel } from '@prisma/client';
 import { TYPES } from '../../../types';
 import { PrismaService } from '../../../database/prisma.service';
-import { Purchase } from './purchases.entity';
+import { IUsersEnkodRepository } from './users.repository.interface';
+import { User } from './users.entity';
 
 @injectable()
-export class PurchasesRepository implements IPurchaseRepository {
+export class UsersEnkodRepository implements IUsersEnkodRepository {
 	constructor(@inject(TYPES.PrismaService) private prismaService: PrismaService) {}
 	async create({
-		             gcPurchaseId,
-		             email,
-		             name,
-		             gcUserId,
-		             productTitle,
-		             startAt,
-		             finishAt,
-		             period,
-		             state,
-		             purchase_ink,
-	             }: Purchase): Promise<PurchaseModel> {
-		return this.prismaService.client.purchaseModel.create({
+		gcUserId,
+		email,
+		firstName,
+		lastName,
+		gcOrderId,
+		positionsInOrder,
+		createdAtOrder,
+		statusOrder,
+	}: User): Promise<UserExceptionModel> {
+		return this.prismaService.client.userExceptionModel.create({
 			data: {
-				gcPurchaseId,
-				email,
-				name,
 				gcUserId,
-				productTitle,
-				startAt,
-				finishAt,
-				period,
-				state,
-				purchase_ink,
+				email,
+				firstName,
+				lastName,
+				gcOrderId,
+				positionsInOrder,
+				createdAtOrder,
+				statusOrder,
 			},
 		});
 	}
 
-	async find(email: string): Promise<PurchaseModel | null> {
-		return this.prismaService.client.purchaseModel.findFirst({
+	async find(email: string): Promise<UserExceptionModel | null> {
+		return this.prismaService.client.userExceptionModel.findFirst({
 			where: {
 				email,
 			},

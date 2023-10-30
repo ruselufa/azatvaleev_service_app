@@ -20,6 +20,12 @@ import { IPurchasesControllerInterface } from './modules/distribution_bot/purcha
 import { PurchasesController } from './modules/distribution_bot/purchases/purchases.controller';
 import { IPurchaseRepository } from './modules/distribution_bot/purchases/purchases.repository.interface';
 import { PurchasesRepository } from './modules/distribution_bot/purchases/purchases.repository';
+import { IUsersEnkodControllerInterface } from './modules/enkod/users/users.controller.interface';
+import { IUsersEnkodService } from './modules/enkod/users/users.service.interface';
+import { IUsersEnkodRepository } from './modules/enkod/users/users.repository.interface';
+import { UsersEnkodController } from './modules/enkod/users/users.controller';
+import { UsersEnkodService } from './modules/enkod/users/users.service';
+import { UsersEnkodRepository } from './modules/enkod/users/users.repository';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -27,16 +33,21 @@ export interface IBootstrapReturn {
 }
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
+	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
 	bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
 	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
 	bind<IUserController>(TYPES.UserController).to(UserController);
-	bind<IPurchasesControllerInterface>(TYPES.PurchasesController).to(PurchasesController);
 	bind<IUsersService>(TYPES.UserService).to(UserService);
-	bind<IPurchasesService>(TYPES.PurchasesService).to(PurchaseService);
-	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
-	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
+	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
+	bind<IPurchasesControllerInterface>(TYPES.PurchasesController).to(PurchasesController);
+	bind<IPurchasesService>(TYPES.PurchasesService).to(PurchaseService);
 	bind<IPurchaseRepository>(TYPES.PurchasesRepository).to(PurchasesRepository).inSingletonScope();
+	bind<IUsersEnkodControllerInterface>(TYPES.UsersEnkodController).to(UsersEnkodController);
+	bind<IUsersEnkodService>(TYPES.UsersEnkodService).to(UsersEnkodService);
+	bind<IUsersEnkodRepository>(TYPES.UsersEnkodRepository)
+		.to(UsersEnkodRepository)
+		.inSingletonScope();
 	bind<App>(TYPES.Application).to(App);
 });
 

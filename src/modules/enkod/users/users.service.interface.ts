@@ -1,6 +1,6 @@
-import { PurchaseModel } from '@prisma/client';
-import { PurchaseCreateDto } from './dto/purchase-create.dto';
+import { UserExceptionModel } from '@prisma/client';
+import { UserCreateDto } from './dto/user-create.dto';
 
-export interface IPurchasesService {
-	createUser: (purchase: PurchaseCreateDto) => Promise<PurchaseModel | null>;
+export interface IUsersEnkodService {
+	createUser: (purchase: UserCreateDto) => Promise<UserExceptionModel | null>;
 }

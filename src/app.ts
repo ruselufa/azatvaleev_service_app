@@ -11,6 +11,7 @@ import { UserController } from './users/users.controller';
 import { PurchasesController } from './modules/distribution_bot/purchases/purchases.controller';
 import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
+import { UsersEnkodController } from './modules/enkod/users/users.controller';
 
 @injectable()
 export class App {
@@ -21,6 +22,7 @@ export class App {
 		@inject(TYPES.ILogger) private logger: ILogger,
 		@inject(TYPES.UserController) private userController: UserController,
 		@inject(TYPES.PurchasesController) private purchasesController: PurchasesController,
+		@inject(TYPES.UsersEnkodController) private usersEnkodController: UsersEnkodController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
@@ -37,6 +39,7 @@ export class App {
 	useRoutes(): void {
 		this.app.use('/users', this.userController.router);
 		this.app.use('/api/purchases', this.purchasesController.router);
+		this.app.use('/api/enkod', this.usersEnkodController.router);
 	}
 	useExceptionFilters(): void {
 		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));

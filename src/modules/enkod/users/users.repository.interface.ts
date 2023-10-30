@@ -1,7 +1,7 @@
-import { PurchaseModel } from '@prisma/client';
-import { Purchase } from './purchases.entity';
+import { UserExceptionModel } from '@prisma/client';
+import { User } from './users.entity';
 
-export interface IPurchaseRepository {
-	create: (purchase: Purchase) => Promise<PurchaseModel>;
-	find: (email: string) => Promise<PurchaseModel | null>;
+export interface IUsersEnkodRepository {
+	create: (purchase: User) => Promise<UserExceptionModel>;
+	find: (email: string) => Promise<UserExceptionModel | null>;
 }

@@ -1,54 +1,44 @@
-export class Purchase {
+export class User {
 	constructor(
-		private readonly _gcPurchaseId: number,
-		private readonly _email: string,
-		private readonly _name: string,
 		private readonly _gcUserId: number,
-		private readonly _productTitle: string,
-		private readonly _startAt: string,
-		private readonly _finishAt: string,
-		private readonly _period: string,
-		private readonly _state: string,
-		private readonly _purchase_ink: string,
+		private readonly _email: string,
+		private readonly _firstName: string,
+		private readonly _lastName: string,
+		private readonly _gcOrderId: number,
+		private readonly _positionsInOrder: string,
+		private readonly _createdAtOrder: string,
+		private readonly _statusOrder: string,
 	) {}
 
-	get gcPurchaseId(): number {
-		return this._gcPurchaseId;
+	get gcUserId(): number {
+		return this._gcUserId;
 	}
 
 	get email(): string {
 		return this._email;
 	}
 
-	get name(): string {
-		return this._name;
+	get firstName(): string {
+		return this._firstName;
 	}
 
-	get gcUserId(): number {
-		return this._gcUserId;
+	get lastName(): string {
+		return this._lastName;
 	}
 
-	get productTitle(): string {
-		return this._productTitle;
+	get gcOrderId(): number {
+		return this._gcOrderId;
 	}
 
-	get startAt(): string {
-		return this._startAt;
+	get positionsInOrder(): string {
+		return this._positionsInOrder;
 	}
 
-	get finishAt(): string {
-		return this._finishAt;
+	get createdAtOrder(): string {
+		return this._createdAtOrder;
 	}
 
-	get period(): string {
-		return this._period;
-	}
-
-	get state(): string {
-		return this._state;
-	}
-
-	get purchase_ink(): string {
-		return this._purchase_ink;
+	get statusOrder(): string {
+		return this._statusOrder;
 	}
 }

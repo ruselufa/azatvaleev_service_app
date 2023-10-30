@@ -10,4 +10,7 @@ export const TYPES = {
 	PurchasesRepository: Symbol.for('PurchasesRepository'),
 	PurchasesService: Symbol.for('PurchasesService'),
 	PurchasesController: Symbol.for('PurchasesController'),
+	UsersEnkodController: Symbol.for('UsersEnkodController'),
+	UsersEnkodService: Symbol.for('UsersEnkodService'),
+	UsersEnkodRepository: Symbol.for('UsersEnkodepository'),
 };
