@@ -8,6 +8,7 @@ import { json } from 'body-parser';
 import { IConfigService } from './config/config.service.interface';
 import { IExceptionFilter } from './error/exception.filter.interface';
 import { UserController } from './users/users.controller';
+import { PurchasesController } from './modules/distribution_bot/purchases/purchases.controller';
 import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
 
@@ -19,6 +20,7 @@ export class App {
 	constructor(
 		@inject(TYPES.ILogger) private logger: ILogger,
 		@inject(TYPES.UserController) private userController: UserController,
+		@inject(TYPES.PurchasesController) private purchasesController: PurchasesController,
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
@@ -34,6 +36,7 @@ export class App {
 
 	useRoutes(): void {
 		this.app.use('/users', this.userController.router);
+		this.app.use('/api/purchases', this.purchasesController.router);
 	}
 	useExceptionFilters(): void {
 		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));

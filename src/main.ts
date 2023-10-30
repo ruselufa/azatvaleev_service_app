@@ -14,6 +14,12 @@ import { ConfigService } from './config/config.service';
 import { PrismaService } from './database/prisma.service';
 import { UsersRepository } from './users/users.repository';
 import { IUsersRepository } from './users/users.repository.interface';
+import { PurchaseService } from './modules/distribution_bot/purchases/purchases.service';
+import { IPurchasesService } from './modules/distribution_bot/purchases/purchases.service.interface';
+import { IPurchasesControllerInterface } from './modules/distribution_bot/purchases/purchases.controller.interface';
+import { PurchasesController } from './modules/distribution_bot/purchases/purchases.controller';
+import { IPurchaseRepository } from './modules/distribution_bot/purchases/purchases.repository.interface';
+import { PurchasesRepository } from './modules/distribution_bot/purchases/purchases.repository';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -24,10 +30,13 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope();
 	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
 	bind<IUserController>(TYPES.UserController).to(UserController);
+	bind<IPurchasesControllerInterface>(TYPES.PurchasesController).to(PurchasesController);
 	bind<IUsersService>(TYPES.UserService).to(UserService);
+	bind<IPurchasesService>(TYPES.PurchasesService).to(PurchaseService);
 	bind<PrismaService>(TYPES.PrismaService).to(PrismaService).inSingletonScope();
 	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
+	bind<IPurchaseRepository>(TYPES.PurchasesRepository).to(PurchasesRepository).inSingletonScope();
 	bind<App>(TYPES.Application).to(App);
 });
 
