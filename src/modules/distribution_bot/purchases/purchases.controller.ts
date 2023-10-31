@@ -8,6 +8,7 @@ import { IConfigService } from '../../../config/config.service.interface';
 import { IPurchasesService } from './purchases.service.interface';
 import { HTTPError } from '../../../error/http-error.class';
 import { PurchaseCreateDto } from './dto/purchase-create.dto';
+import {ValidatePurchaseMiddleware} from "./purchases.validate";
 
 export class PurchasesController extends BaseController implements IPurchasesControllerInterface {
 	constructor(
@@ -21,7 +22,7 @@ export class PurchasesController extends BaseController implements IPurchasesCon
 				path: '/add',
 				method: 'get',
 				func: this.apiReceive,
-				middlewares: [],
+				middlewares: [new ValidatePurchaseMiddleware(PurchaseCreateDto)],
 			},
 		]);
 	}

@@ -6,6 +6,7 @@ import { IUsersEnkodService } from './users.service.interface';
 import { User } from './users.entity';
 import { IUsersEnkodRepository } from './users.repository.interface';
 import { UserExceptionModel } from '@prisma/client';
+import { isNumber, isString } from 'class-validator';
 
 @injectable()
 export class UsersEnkodService implements IUsersEnkodService {

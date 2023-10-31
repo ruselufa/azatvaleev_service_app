@@ -2,21 +2,23 @@ import { IMiddleware } from '../../../common/middleware.interface';
 import { NextFunction, Request, Response } from 'express';
 import { ClassConstructor, plainToClass, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
-import { UserCreateDto } from './dto/user-create.dto';
+import { PurchaseCreateDto } from './dto/purchase-create.dto';
 
-export class ValidateUserMiddleware implements IMiddleware {
+export class ValidatePurchaseMiddleware implements IMiddleware {
 	constructor(private classToValidate: ClassConstructor<object>) {}
 
 	execute({ query }: Request, res: Response, next: NextFunction): void {
-		const transferObject: UserCreateDto = {
-			gcUserId: Number(query.gcUserId),
+		const transferObject: PurchaseCreateDto = {
+			gcPurchaseId: Number(query.gcPurchaseId),
 			email: String(query.email),
-			firstName: String(query.firstName),
-			lastName: String(query.lastName),
-			gcOrderId: Number(query.gcOrderId),
-			positionsInOrder: String(query.positionsInOrder),
-			createdAtOrder: String(query.createdAtOrder),
-			statusOrder: String(query.statusOrder),
+			name: String(query.name),
+			gcUserId: Number(query.gcUserId),
+			productTitle: String(query.productTitle),
+			startAt: String(query.startAt),
+			finishAt: String(query.finishAt),
+			period: String(query.period),
+			state: String(query.state),
+			purchase_ink: String(query.purchase_ink),
 		};
 		const instance = plainToInstance(this.classToValidate, transferObject);
 		validate(instance).then((errors) => {
