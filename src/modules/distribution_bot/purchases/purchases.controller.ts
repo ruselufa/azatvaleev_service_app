@@ -36,8 +36,10 @@ export class PurchasesController extends BaseController implements IPurchasesCon
 	async apiReceive({ query }: Request, res: Response, next: NextFunction): Promise<void> {
 		const transferObj = JSON.stringify(query);
 		console.log(transferObj);
+		const originaLink = String(query.purchase_ink);
+		const realGcPurchaseId = originaLink.slice(originaLink.indexOf('id/') + 3);
 		const transferObject: PurchaseCreateDto = {
-			gcPurchaseId: Number(query.gcPurchaseId),
+			gcPurchaseId: Number(realGcPurchaseId),
 			email: String(query.email),
 			name: String(query.name),
 			gcUserId: Number(query.gcUserId),
@@ -59,8 +61,10 @@ export class PurchasesController extends BaseController implements IPurchasesCon
 	async apiReceiveAlina2Cake({ query }: Request, res: Response, next: NextFunction): Promise<void> {
 		const transferObj = JSON.stringify(query);
 		console.log(transferObj);
+		const originaLink = String(query.purchase_ink);
+		const realGcPurchaseId = originaLink.slice(originaLink.indexOf('id/') + 3);
 		const transferObject: PurchaseCreateDto = {
-			gcPurchaseId: Number(query.gcPurchaseId),
+			gcPurchaseId: Number(realGcPurchaseId),
 			email: String(query.email),
 			name: String(query.name),
 			gcUserId: Number(query.gcUserId),
