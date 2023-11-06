@@ -4,7 +4,7 @@ import { TYPES } from '../../../types';
 import { IConfigService } from '../../../config/config.service.interface';
 import { IPurchaseRepository } from './purchases.repository.interface';
 import { Purchase } from './purchases.entity';
-import { PurchaseModel } from '@prisma/client';
+import { PurchaseModel, PurchaseModelAlina2Cake } from '@prisma/client';
 import { PurchaseCreateDto } from './dto/purchase-create.dto';
 
 @injectable()
@@ -39,4 +39,33 @@ export class PurchaseService implements IPurchasesService {
 		);
 		return this.purchaseRepository.create(newUser);
 	}
+
+	async createUserAlina2Cake({
+		gcPurchaseId,
+		email,
+		name,
+		gcUserId,
+		productTitle,
+		startAt,
+		finishAt,
+		period,
+		state,
+		purchase_ink,
+	}: PurchaseCreateDto): Promise<PurchaseModelAlina2Cake | null> {
+		const newUser = new Purchase(
+			gcPurchaseId,
+			email,
+			name,
+			gcUserId,
+			productTitle,
+			startAt,
+			finishAt,
+			period,
+			state,
+			purchase_ink,
+		);
+		return this.purchaseRepository.createAlina2Cake(newUser);
+	}
+
+
 }
