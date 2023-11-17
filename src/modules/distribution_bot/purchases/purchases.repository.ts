@@ -35,6 +35,26 @@ export class PurchasesRepository implements IPurchaseRepository {
 			},
 		});
 	}
+
+	async find(gcPurchaseId: number): Promise<PurchaseModel | null> {
+		return this.prismaService.client.purchaseModel.findFirst({
+			where: {
+				gcPurchaseId,
+			},
+		});
+	}
+	async updateFinishAt(id: number, finishAt: string, purchase_ink: string): Promise<PurchaseModel> {
+		return this.prismaService.client.purchaseModel.update({
+			where: {
+				id,
+			},
+			data: {
+				finishAt,
+				purchase_ink,
+			},
+		});
+	}
+
 	async createAlina2Cake({
 		gcPurchaseId,
 		email,
@@ -63,10 +83,26 @@ export class PurchasesRepository implements IPurchaseRepository {
 		});
 	}
 
-	async find(email: string): Promise<PurchaseModel | null> {
-		return this.prismaService.client.purchaseModel.findFirst({
+	async findAlina2Cake(gcPurchaseId: number): Promise<PurchaseModelAlina2Cake | null> {
+		return this.prismaService.client.purchaseModelAlina2Cake.findFirst({
 			where: {
-				email,
+				gcPurchaseId,
+			},
+		});
+	}
+
+	async updateFinishAtAlina2Cake(
+		id: number,
+		finishAt: string,
+		purchase_ink: string,
+	): Promise<PurchaseModelAlina2Cake> {
+		return this.prismaService.client.purchaseModelAlina2Cake.update({
+			where: {
+				id,
+			},
+			data: {
+				finishAt,
+				purchase_ink,
 			},
 		});
 	}

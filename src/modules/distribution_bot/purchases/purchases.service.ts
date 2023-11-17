@@ -37,6 +37,52 @@ export class PurchaseService implements IPurchasesService {
 			state,
 			purchase_ink,
 		);
+		const existedPurchase = await this.purchaseRepository.find(gcPurchaseId);
+		if (existedPurchase) {
+			const month = [
+				'Янв',
+				'Фев',
+				'Мар',
+				'Апр',
+				'Май',
+				'Июн',
+				'Июл',
+				'Авг',
+				'Сен',
+				'Окт',
+				'Ноя',
+				'Дек',
+			];
+			const newPurchaseDateArr = newUser.finishAt.split(' ');
+			const existedPurchaseDateArr = existedPurchase.finishAt.split(' ');
+			let newPurchaseDate, existedPurchaseDate;
+			month.map((m, i) => {
+				if (m === newPurchaseDateArr[1]) {
+					newPurchaseDate = Date.parse(
+						`${newPurchaseDateArr[2]}-${String(i + 1)}-${newPurchaseDateArr[0]}`,
+					);
+				}
+			});
+			month.map((m, i) => {
+				if (m === existedPurchaseDateArr[1]) {
+					existedPurchaseDate = Date.parse(
+						`${existedPurchaseDateArr[2]}-${String(i + 1)}-${existedPurchaseDateArr[0]}`,
+					);
+				}
+			});
+			if (newPurchaseDate === undefined) {
+				return null;
+			}
+			if (existedPurchaseDate === undefined) {
+				return this.purchaseRepository.updateFinishAt(existedPurchase.id, newUser.finishAt, newUser.purchase_ink);
+			}
+			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
+				return this.purchaseRepository.updateFinishAt(existedPurchase.id, newUser.finishAt, newUser.purchase_ink);
+			}
+			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {
+				return null;
+			}
+		}
 		return this.purchaseRepository.create(newUser);
 	}
 
@@ -64,8 +110,60 @@ export class PurchaseService implements IPurchasesService {
 			state,
 			purchase_ink,
 		);
+		const existedPurchase = await this.purchaseRepository.findAlina2Cake(gcPurchaseId);
+		if (existedPurchase) {
+			const month = [
+				'Янв',
+				'Фев',
+				'Мар',
+				'Апр',
+				'Май',
+				'Июн',
+				'Июл',
+				'Авг',
+				'Сен',
+				'Окт',
+				'Ноя',
+				'Дек',
+			];
+			const newPurchaseDateArr = newUser.finishAt.split(' ');
+			const existedPurchaseDateArr = existedPurchase.finishAt.split(' ');
+			let newPurchaseDate, existedPurchaseDate;
+			month.map((m, i) => {
+				if (m === newPurchaseDateArr[1]) {
+					newPurchaseDate = Date.parse(
+						`${newPurchaseDateArr[2]}-${String(i + 1)}-${newPurchaseDateArr[0]}`,
+					);
+				}
+			});
+			month.map((m, i) => {
+				if (m === existedPurchaseDateArr[1]) {
+					existedPurchaseDate = Date.parse(
+						`${existedPurchaseDateArr[2]}-${String(i + 1)}-${existedPurchaseDateArr[0]}`,
+					);
+				}
+			});
+			if (newPurchaseDate === undefined) {
+				return null;
+			}
+			if (existedPurchaseDate === undefined) {
+				return this.purchaseRepository.updateFinishAtAlina2Cake(
+					existedPurchase.id,
+					newUser.finishAt,
+					newUser.purchase_ink,
+				);
+			}
+			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
+				return this.purchaseRepository.updateFinishAtAlina2Cake(
+					existedPurchase.id,
+					newUser.finishAt,
+					newUser.purchase_ink,
+				);
+			}
+			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {
+				return null;
+			}
+		}
 		return this.purchaseRepository.createAlina2Cake(newUser);
 	}
-
-
 }
