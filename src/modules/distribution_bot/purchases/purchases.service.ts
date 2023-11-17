@@ -38,7 +38,7 @@ export class PurchaseService implements IPurchasesService {
 			purchase_ink,
 		);
 		const existedPurchase = await this.purchaseRepository.find(gcPurchaseId);
-		if (existedPurchase) {
+		if (existedPurchase !== null) {
 			const month = [
 				'Янв',
 				'Фев',
@@ -71,18 +71,31 @@ export class PurchaseService implements IPurchasesService {
 				}
 			});
 			if (newPurchaseDate === undefined) {
+				console.log('В новой покупке нет даты окончания курса, не трогаем');
 				return null;
 			}
 			if (existedPurchaseDate === undefined) {
-				return this.purchaseRepository.updateFinishAt(existedPurchase.id, newUser.finishAt, newUser.purchase_ink);
+				console.log('В старой покупке нет даты ок курса, обновляем');
+				return this.purchaseRepository.updateFinishAt(
+					existedPurchase.id,
+					newUser.finishAt,
+					newUser.purchase_ink,
+				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
-				return this.purchaseRepository.updateFinishAt(existedPurchase.id, newUser.finishAt, newUser.purchase_ink);
+				console.log('В старой покупке дата ок курса раньше новой покупки, обновляем');
+				return this.purchaseRepository.updateFinishAt(
+					existedPurchase.id,
+					newUser.finishAt,
+					newUser.purchase_ink,
+				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {
+				console.log('В новой покупке дата окончания курса раньше старой покупки, не трогаем');
 				return null;
 			}
 		}
+		console.log('Такой покупки нет, создаем новую');
 		return this.purchaseRepository.create(newUser);
 	}
 
@@ -111,7 +124,8 @@ export class PurchaseService implements IPurchasesService {
 			purchase_ink,
 		);
 		const existedPurchase = await this.purchaseRepository.findAlina2Cake(gcPurchaseId);
-		if (existedPurchase) {
+		console.log(existedPurchase);
+		if (existedPurchase !== null) {
 			const month = [
 				'Янв',
 				'Фев',
@@ -144,9 +158,11 @@ export class PurchaseService implements IPurchasesService {
 				}
 			});
 			if (newPurchaseDate === undefined) {
+				console.log('В новой покупке нет даты окончания курса, не трогаем');
 				return null;
 			}
 			if (existedPurchaseDate === undefined) {
+				console.log('В старой покупке нет даты ок курса, обновляем');
 				return this.purchaseRepository.updateFinishAtAlina2Cake(
 					existedPurchase.id,
 					newUser.finishAt,
@@ -154,6 +170,7 @@ export class PurchaseService implements IPurchasesService {
 				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
+				console.log('В старой покупке дата ок курса раньше новой покупки, обновляем');
 				return this.purchaseRepository.updateFinishAtAlina2Cake(
 					existedPurchase.id,
 					newUser.finishAt,
@@ -161,9 +178,11 @@ export class PurchaseService implements IPurchasesService {
 				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {
+				console.log('В новой покупке дата окончания курса раньше старой покупки, не трогаем');
 				return null;
 			}
 		}
+		console.log('Такой покупки нет, создаем новую');
 		return this.purchaseRepository.createAlina2Cake(newUser);
 	}
 }
