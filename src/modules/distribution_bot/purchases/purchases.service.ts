@@ -37,7 +37,7 @@ export class PurchaseService implements IPurchasesService {
 			state,
 			purchase_ink,
 		);
-		const existedPurchase = await this.purchaseRepository.find(gcPurchaseId);
+		const existedPurchase = await this.purchaseRepository.find(email);
 		if (existedPurchase !== null) {
 			const month = [
 				'Янв',
@@ -80,6 +80,7 @@ export class PurchaseService implements IPurchasesService {
 					existedPurchase.id,
 					newUser.finishAt,
 					newUser.purchase_ink,
+					newUser.state,
 				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
@@ -88,6 +89,7 @@ export class PurchaseService implements IPurchasesService {
 					existedPurchase.id,
 					newUser.finishAt,
 					newUser.purchase_ink,
+					newUser.state,
 				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {
@@ -123,7 +125,7 @@ export class PurchaseService implements IPurchasesService {
 			state,
 			purchase_ink,
 		);
-		const existedPurchase = await this.purchaseRepository.findAlina2Cake(gcPurchaseId);
+		const existedPurchase = await this.purchaseRepository.findAlina2Cake(email);
 		console.log(existedPurchase);
 		if (existedPurchase !== null) {
 			const month = [
@@ -167,6 +169,7 @@ export class PurchaseService implements IPurchasesService {
 					existedPurchase.id,
 					newUser.finishAt,
 					newUser.purchase_ink,
+					newUser.state,
 				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
@@ -175,6 +178,7 @@ export class PurchaseService implements IPurchasesService {
 					existedPurchase.id,
 					newUser.finishAt,
 					newUser.purchase_ink,
+					newUser.state,
 				);
 			}
 			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {

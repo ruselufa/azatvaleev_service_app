@@ -4,14 +4,15 @@ import { Purchase } from './purchases.entity';
 
 export interface IPurchaseRepository {
 	create: (purchase: Purchase) => Promise<PurchaseModel>;
-	find: (gcPurchaseId: number) => Promise<PurchaseModel | null>;
-	updateFinishAt: (id: number, finishAt: string, purchase_ink: string) => Promise<PurchaseModel>;
+	find: (email: string) => Promise<PurchaseModel | null>;
+	updateFinishAt: (id: number, finishAt: string, purchase_ink: string, state: string) => Promise<PurchaseModel>;
 
 	createAlina2Cake: (purchase: Purchase) => Promise<PurchaseModelAlina2Cake>;
-	findAlina2Cake: (gcPurchaseId: number) => Promise<PurchaseModelAlina2Cake | null>;
+	findAlina2Cake: (email: string) => Promise<PurchaseModelAlina2Cake | null>;
 	updateFinishAtAlina2Cake: (
 		id: number,
 		finishAt: string,
 		purchase_ink: string,
+		state: string
 	) => Promise<PurchaseModelAlina2Cake>;
 }
