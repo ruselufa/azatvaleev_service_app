@@ -44,16 +44,18 @@ export class PurchasesRepository implements IPurchaseRepository {
 		});
 	}
 	async updateFinishAt(
-		id: number, 
-		finishAt: string, 
-		purchase_ink: string, 
-		state: string
-		): Promise<PurchaseModel> {
+		id: number,
+		startAt: string,
+		finishAt: string,
+		purchase_ink: string,
+		state: string,
+	): Promise<PurchaseModel> {
 		return this.prismaService.client.purchaseModel.update({
 			where: {
 				id,
 			},
 			data: {
+				startAt,
 				finishAt,
 				purchase_ink,
 				state,
@@ -99,6 +101,7 @@ export class PurchasesRepository implements IPurchaseRepository {
 
 	async updateFinishAtAlina2Cake(
 		id: number,
+		startAt: string,
 		finishAt: string,
 		purchase_ink: string,
 		state: string,
@@ -108,6 +111,7 @@ export class PurchasesRepository implements IPurchaseRepository {
 				id,
 			},
 			data: {
+				startAt,
 				finishAt,
 				purchase_ink,
 				state,

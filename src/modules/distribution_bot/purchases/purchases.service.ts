@@ -53,46 +53,72 @@ export class PurchaseService implements IPurchasesService {
 				'Ноя',
 				'Дек',
 			];
-			const newPurchaseDateArr = newUser.finishAt.split(' ');
-			const existedPurchaseDateArr = existedPurchase.finishAt.split(' ');
-			let newPurchaseDate, existedPurchaseDate;
+			const newPurchaseStartDateArr = newUser.startAt.split(' ');
+			const newPurchaseFinishDateArr = newUser.finishAt.split(' ');
+			const existedPurchaseStartDateArr = existedPurchase.startAt.split(' ');
+			const existedPurchaseFinishDateArr = existedPurchase.finishAt.split(' ');
+			let newPurchaseFinishDate,
+				newPurchaseStartDate,
+				existedPurchaseFinishDate,
+				existedPurchaseStartDate;
 			month.map((m, i) => {
-				if (m === newPurchaseDateArr[1]) {
-					newPurchaseDate = Date.parse(
-						`${newPurchaseDateArr[2]}-${String(i + 1)}-${newPurchaseDateArr[0]}`,
+				if (m === newPurchaseStartDateArr[1]) {
+					newPurchaseStartDate = Date.parse(
+						`${newPurchaseStartDateArr[2]}-${String(i + 1)}-${newPurchaseStartDateArr[0]}`,
+					);
+				}
+				if (m === newPurchaseFinishDateArr[1]) {
+					newPurchaseFinishDate = Date.parse(
+						`${newPurchaseFinishDateArr[2]}-${String(i + 1)}-${newPurchaseFinishDateArr[0]}`,
+					);
+				}
+				if (m === existedPurchaseFinishDateArr[1]) {
+					existedPurchaseFinishDate = Date.parse(
+						`${existedPurchaseFinishDateArr[2]}-${String(i + 1)}-${
+							existedPurchaseFinishDateArr[0]
+						}`,
+					);
+				}
+				if (m === existedPurchaseStartDateArr[1]) {
+					existedPurchaseStartDate = Date.parse(
+						`${existedPurchaseStartDateArr[2]}-${String(i + 1)}-${existedPurchaseStartDateArr[0]}`,
 					);
 				}
 			});
-			month.map((m, i) => {
-				if (m === existedPurchaseDateArr[1]) {
-					existedPurchaseDate = Date.parse(
-						`${existedPurchaseDateArr[2]}-${String(i + 1)}-${existedPurchaseDateArr[0]}`,
-					);
-				}
-			});
-			if (newPurchaseDate === undefined) {
+			if (newPurchaseFinishDate === undefined || newPurchaseStartDate === undefined) {
 				console.log('В новой покупке нет даты окончания курса, не трогаем');
 				return null;
 			}
-			if (existedPurchaseDate === undefined) {
-				console.log('В старой покупке нет даты ок курса, обновляем');
+			if (existedPurchaseFinishDate === undefined && existedPurchaseStartDate === undefined) {
+				console.log('В старой покупке нет даты ок курса и нач курса, обновляем все');
 				return this.purchaseRepository.updateFinishAt(
 					existedPurchase.id,
+					newUser.startAt,
 					newUser.finishAt,
 					newUser.purchase_ink,
 					newUser.state,
 				);
 			}
-			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
-				console.log('В старой покупке дата ок курса раньше новой покупки, обновляем');
+			if (
+				existedPurchaseStartDate !== undefined &&
+				existedPurchaseFinishDate !== undefined &&
+				existedPurchaseFinishDate < newPurchaseFinishDate
+			) {
+				console.log(
+					'В старой покупке дата ок курса раньше новой покупки, обновляем дату окончания',
+				);
 				return this.purchaseRepository.updateFinishAt(
 					existedPurchase.id,
+					existedPurchase.startAt,
 					newUser.finishAt,
 					newUser.purchase_ink,
 					newUser.state,
 				);
 			}
-			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {
+			if (
+				existedPurchaseFinishDate !== undefined &&
+				existedPurchaseFinishDate >= newPurchaseFinishDate
+			) {
 				console.log('В новой покупке дата окончания курса раньше старой покупки, не трогаем');
 				return null;
 			}
@@ -126,7 +152,6 @@ export class PurchaseService implements IPurchasesService {
 			purchase_ink,
 		);
 		const existedPurchase = await this.purchaseRepository.findAlina2Cake(email);
-		console.log(existedPurchase);
 		if (existedPurchase !== null) {
 			const month = [
 				'Янв',
@@ -142,46 +167,72 @@ export class PurchaseService implements IPurchasesService {
 				'Ноя',
 				'Дек',
 			];
-			const newPurchaseDateArr = newUser.finishAt.split(' ');
-			const existedPurchaseDateArr = existedPurchase.finishAt.split(' ');
-			let newPurchaseDate, existedPurchaseDate;
+			const newPurchaseStartDateArr = newUser.startAt.split(' ');
+			const newPurchaseFinishDateArr = newUser.finishAt.split(' ');
+			const existedPurchaseStartDateArr = existedPurchase.startAt.split(' ');
+			const existedPurchaseFinishDateArr = existedPurchase.finishAt.split(' ');
+			let newPurchaseStartDate,
+				newPurchaseFinishDate,
+				existedPurchaseFinishDate,
+				existedPurchaseStartDate;
 			month.map((m, i) => {
-				if (m === newPurchaseDateArr[1]) {
-					newPurchaseDate = Date.parse(
-						`${newPurchaseDateArr[2]}-${String(i + 1)}-${newPurchaseDateArr[0]}`,
+				if (m === newPurchaseStartDateArr[1]) {
+					newPurchaseStartDate = Date.parse(
+						`${newPurchaseStartDateArr[2]}-${String(i + 1)}-${newPurchaseStartDateArr[0]}`,
+					);
+				}
+				if (m === newPurchaseFinishDateArr[1]) {
+					newPurchaseFinishDate = Date.parse(
+						`${newPurchaseFinishDateArr[2]}-${String(i + 1)}-${newPurchaseFinishDateArr[0]}`,
+					);
+				}
+				if (m === existedPurchaseFinishDateArr[1]) {
+					existedPurchaseFinishDate = Date.parse(
+						`${existedPurchaseFinishDateArr[2]}-${String(i + 1)}-${
+							existedPurchaseFinishDateArr[0]
+						}`,
+					);
+				}
+				if (m === existedPurchaseStartDateArr[1]) {
+					existedPurchaseStartDate = Date.parse(
+						`${existedPurchaseStartDateArr[2]}-${String(i + 1)}-${existedPurchaseStartDateArr[0]}`,
 					);
 				}
 			});
-			month.map((m, i) => {
-				if (m === existedPurchaseDateArr[1]) {
-					existedPurchaseDate = Date.parse(
-						`${existedPurchaseDateArr[2]}-${String(i + 1)}-${existedPurchaseDateArr[0]}`,
-					);
-				}
-			});
-			if (newPurchaseDate === undefined) {
+			if (newPurchaseFinishDate === undefined || newPurchaseStartDate === undefined) {
 				console.log('В новой покупке нет даты окончания курса, не трогаем');
 				return null;
 			}
-			if (existedPurchaseDate === undefined) {
-				console.log('В старой покупке нет даты ок курса, обновляем');
+			if (existedPurchaseFinishDate === undefined && existedPurchaseStartDate === undefined) {
+				console.log('В старой покупке нет даты ок курса и нач курса, обновляем все');
 				return this.purchaseRepository.updateFinishAtAlina2Cake(
 					existedPurchase.id,
+					newUser.startAt,
 					newUser.finishAt,
 					newUser.purchase_ink,
 					newUser.state,
 				);
 			}
-			if (existedPurchaseDate !== undefined && existedPurchaseDate < newPurchaseDate) {
-				console.log('В старой покупке дата ок курса раньше новой покупки, обновляем');
+			if (
+				existedPurchaseStartDate !== undefined &&
+				existedPurchaseFinishDate !== undefined &&
+				existedPurchaseFinishDate < newPurchaseFinishDate
+			) {
+				console.log(
+					'В старой покупке дата ок курса раньше новой покупки, обновляем дату окончания',
+				);
 				return this.purchaseRepository.updateFinishAtAlina2Cake(
 					existedPurchase.id,
+					existedPurchase.startAt,
 					newUser.finishAt,
 					newUser.purchase_ink,
 					newUser.state,
 				);
 			}
-			if (existedPurchaseDate !== undefined && existedPurchaseDate >= newPurchaseDate) {
+			if (
+				existedPurchaseFinishDate !== undefined &&
+				existedPurchaseFinishDate >= newPurchaseFinishDate
+			) {
 				console.log('В новой покупке дата окончания курса раньше старой покупки, не трогаем');
 				return null;
 			}

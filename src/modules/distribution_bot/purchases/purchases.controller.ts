@@ -34,8 +34,6 @@ export class PurchasesController extends BaseController implements IPurchasesCon
 	}
 
 	async apiReceive({ query }: Request, res: Response, next: NextFunction): Promise<void> {
-		const transferObj = JSON.stringify(query);
-		console.log(transferObj);
 		const originaLink = String(query.purchase_ink);
 		const realGcPurchaseId = originaLink.slice(originaLink.indexOf('id/') + 3);
 		const transferObject: PurchaseCreateDto = {
@@ -54,13 +52,10 @@ export class PurchasesController extends BaseController implements IPurchasesCon
 		if (!result) {
 			return next(new HTTPError(422, 'Ошибка записи пользователя'));
 		}
-		// console.log(req.query);
 		this.ok(res, `Сообщение получено: ${query}`);
 	}
 
 	async apiReceiveAlina2Cake({ query }: Request, res: Response, next: NextFunction): Promise<void> {
-		const transferObj = JSON.stringify(query);
-		console.log(transferObj);
 		const originaLink = String(query.purchase_ink);
 		const realGcPurchaseId = originaLink.slice(originaLink.indexOf('id/') + 3);
 		const transferObject: PurchaseCreateDto = {
@@ -79,9 +74,6 @@ export class PurchasesController extends BaseController implements IPurchasesCon
 		if (!result) {
 			return next(new HTTPError(422, 'Ошибка записи пользователя'));
 		}
-		// console.log(req.query);
 		this.ok(res, `Сообщение получено: ${query}`);
 	}
-
-
 }
