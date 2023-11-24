@@ -33,7 +33,6 @@ export class UsersEnkodController extends BaseController implements IUsersEnkodC
 		res: Response,
 		next: NextFunction,
 	): Promise<void> {
-		console.log(req.query);
 		const transferObject: UserCreateDto = {
 			gcUserId: Number(req.query.gcUserId),
 			email: String(req.query.email),
