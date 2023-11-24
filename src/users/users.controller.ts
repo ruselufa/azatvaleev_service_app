@@ -49,7 +49,6 @@ export class UserController extends BaseController implements IUserController {
 				func: this.apiReceive,
 				middlewares: [],
 			},
-
 		]);
 	}
 
@@ -83,7 +82,6 @@ export class UserController extends BaseController implements IUserController {
 		this.ok(res, { email: userInfo?.email, id: userInfo?.id });
 	}
 	async apiReceive(req: Request, res: Response, next: NextFunction): Promise<void> {
-		console.log(req.query);
 		this.ok(res, `Сообщение получено: ${req.query}`);
 	}
 

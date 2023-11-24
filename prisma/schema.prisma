@@ -40,3 +40,17 @@ model UserExceptionModel {
   createdAtOrder   String
   statusOrder      String
 }
+
+model PurchaseModelAlina2Cake {
+  id           Int    @id @default(autoincrement())
+  gcPurchaseId Int
+  email        String
+  name         String
+  gcUserId     Int
+  productTitle String
+  startAt      String
+  finishAt     String
+  period       String
+  state        String
+  purchase_ink String
+}
