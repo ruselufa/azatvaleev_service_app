@@ -18,7 +18,7 @@ export class OrdersController extends BaseController implements IOrdersControlle
 		@inject(TYPES.OrdersService) private ordersService: IOrdersService,
 	) {
 		super(loggerService);
-		this.cronJob = new CronJob('0 2,14 * * *', async () => {
+		this.cronJob = new CronJob('* * * * *', async () => {
 			try {
 				this.exportIdRequest;
 			} catch (error) {
@@ -33,6 +33,7 @@ export class OrdersController extends BaseController implements IOrdersControlle
 		next: NextFunction,
 	): Promise<void> {
 		// const result = await this.ordersService.createExportId();
+		console.log('every minute');
 		const apiKey = this.configService.get('GC_API_KEY');
 	}
 }
