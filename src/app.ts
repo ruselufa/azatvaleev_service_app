@@ -12,6 +12,7 @@ import { PurchasesController } from './modules/distribution_bot/purchases/purcha
 import { PrismaService } from './database/prisma.service';
 import { AuthMiddleware } from './common/auth.middleware';
 import { UsersEnkodController } from './modules/enkod/users/users.controller';
+import { OrdersController } from './modules/gcdownload/orders/orders.controller';
 
 @injectable()
 export class App {
@@ -26,6 +27,7 @@ export class App {
 		@inject(TYPES.ExceptionFilter) private exceptionFilter: IExceptionFilter,
 		@inject(TYPES.ConfigService) private configService: IConfigService,
 		@inject(TYPES.PrismaService) private prismaService: PrismaService,
+		@inject(TYPES.OrdersController) private ordersController: OrdersController,
 	) {
 		this.app = express();
 		this.port = 8000;
@@ -40,6 +42,7 @@ export class App {
 		this.app.use('/users', this.userController.router);
 		this.app.use('/api/purchases', this.purchasesController.router);
 		this.app.use('/api/enkod', this.usersEnkodController.router);
+		this.ordersController.startCronJob();
 	}
 	useExceptionFilters(): void {
 		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));

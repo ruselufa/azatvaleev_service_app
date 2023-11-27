@@ -26,6 +26,10 @@ import { IUsersEnkodRepository } from './modules/enkod/users/users.repository.in
 import { UsersEnkodController } from './modules/enkod/users/users.controller';
 import { UsersEnkodService } from './modules/enkod/users/users.service';
 import { UsersEnkodRepository } from './modules/enkod/users/users.repository';
+import { IOrdersControllerInterface } from './modules/gcdownload/orders/orders.controller.interface';
+import { OrdersController } from './modules/gcdownload/orders/orders.controller';
+import { IOrdersService } from './modules/gcdownload/orders/orders.service.interface';
+import { OrdersService } from './modules/gcdownload/orders/orders.service';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -40,6 +44,8 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IUsersService>(TYPES.UserService).to(UserService);
 	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
+	bind<IOrdersControllerInterface>(TYPES.OrdersController).to(OrdersController);
+	bind<IOrdersService>(TYPES.OrdersService).to(OrdersService);
 	bind<IPurchasesControllerInterface>(TYPES.PurchasesController).to(PurchasesController);
 	bind<IPurchasesService>(TYPES.PurchasesService).to(PurchaseService);
 	bind<IPurchaseRepository>(TYPES.PurchasesRepository).to(PurchasesRepository).inSingletonScope();

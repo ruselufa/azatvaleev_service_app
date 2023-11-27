@@ -13,7 +13,6 @@ export const TYPES = {
 	UsersEnkodController: Symbol.for('UsersEnkodController'),
 	UsersEnkodService: Symbol.for('UsersEnkodService'),
 	UsersEnkodRepository: Symbol.for('UsersEnkodepository'),
-	OrdersRepository: Symbol.for('PurchasesRepository'),
-	OrdersService: Symbol.for('PurchasesService'),
-	OrdersController: Symbol.for('PurchasesController'),
+	OrdersController: Symbol.for('OrdersController'),
+	OrdersService: Symbol.for('OrdersService'),
 };

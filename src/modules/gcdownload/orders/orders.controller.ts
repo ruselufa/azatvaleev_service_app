@@ -18,23 +18,21 @@ export class OrdersController extends BaseController implements IOrdersControlle
 		@inject(TYPES.OrdersService) private ordersService: IOrdersService,
 	) {
 		super(loggerService);
-		this.cronJob = new CronJob('* * * * *', async () => {
-			try {
-				this.exportIdRequest;
-			} catch (error) {
-				console.error(error);
-			}
-		});
 	}
-
-	async exportIdRequest(
-		{ query }: Request<{}, {}, OrderCreateDto>,
-		res: Response,
-		next: NextFunction,
-	): Promise<void> {
-		// const result = await this.ordersService.createExportId();
-		console.log('every minute');
-		const apiKey = this.configService.get('GC_API_KEY');
+	async startCronJob(): Promise<void> {
+		this.cronJob = new CronJob(
+			'*/30 * * * * *',
+			async () => {
+				try {
+					console.log('every minute');
+					const result = await this.ordersService.requestExportId();
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			null,
+			true,
+		);
 	}
 }
 

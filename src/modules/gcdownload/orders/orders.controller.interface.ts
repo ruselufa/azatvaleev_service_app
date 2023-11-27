@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
 
 export interface IOrdersControllerInterface {
-	exportIdRequest: (req: Request, res: Response, next: NextFunction) => void;
+	startCronJob: () => void;
 }
