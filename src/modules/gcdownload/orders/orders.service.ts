@@ -48,6 +48,7 @@ export class OrdersService implements IOrdersService {
 			);
 			console.log(newExport);
 			console.log('Создаем выгрузку в БД');
+			await this.ordersRepository.createExportIdDb(newExport);
 			return data.info.export_id;
 		} catch (error) {
 			throw new Error('Max retries exceeded');
