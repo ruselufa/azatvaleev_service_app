@@ -9,6 +9,7 @@ export interface IOrdersService {
 	createOrder: (order: OrderCreateDto) => Promise<OrderModel | null>;
 	updateOrder: (order: OrderCreateDto) => Promise<OrderModel | null>;
 	requestExportId: () => Promise<AxiosResponse>;
+	requestExportData: () => Promise<AxiosResponse>;
 }
 
 export interface ApiResponse {
