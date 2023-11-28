@@ -24,8 +24,10 @@ export class OrdersController extends BaseController implements IOrdersControlle
 			'*/30 * * * * *',
 			async () => {
 				try {
-					console.log('every minute');
-					const result = await this.ordersService.requestExportId();
+					const exportId = await this.ordersService.createExportId(3, 5000);
+					if (exportId !== null) {
+						const 
+					}
 				} catch (error) {
 					console.error(error);
 				}

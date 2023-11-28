@@ -56,45 +56,32 @@ model PurchaseModelAlina2Cake {
 }
 
 model OrderModel {
-  id                Int    @id @default(autoincrement())
-  idSystemGc        Int
-  idAzatGc          Int
-  idUserGc          Int
-  user_id           Int
-  userEmail         String
-  userPhone         String
-  createdAt         String
-  payedAt           String
-  orderName         String
-  dealStatus        String
-  price             String
-  payedPrice        String
-  payFee            String
-  income            String
-  taxes             String
-  profit            String
-  otherFee          String
-  netProfit         String
-  currency          String
-  managerName       String
-  city              String
-  payedBy           String
-  partnerId         String
-  promocodeUsed     String
-  promoCompany      String
-  customUtmSource   String
-  customUtmMedium   String
-  customUtmCampaign String
-  customUtmContent  String
-  customUtmTerm     String
-  utmSource         String
-  utmMedium         String
-  utmCampaign       String
-  utmContent        String
-  utmTerm           String
-  utmGroup          String
-  managerTag        String
-  offerTag          String
+  id            Int    @id @default(autoincrement())
+  idSystemGc    Int
+  idAzatGc      Int
+  idUserGc      Int
+  user_id       Int
+  userEmail     String
+  userPhone     String
+  createdAt     String
+  payedAt       String
+  orderName     String
+  dealStatus    String
+  price         String
+  payedPrice    String
+  payFee        String
+  income        String
+  taxes         String
+  profit        String
+  otherFee      String
+  netProfit     String
+  currency      String
+  managerName   String
+  city          String
+  payedBy       String
+  partnerId     String
+  promocodeUsed String
+  promoCompany  String
 }
 
 model NullOrderModel {

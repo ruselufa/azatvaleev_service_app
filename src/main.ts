@@ -30,6 +30,8 @@ import { IOrdersControllerInterface } from './modules/gcdownload/orders/orders.c
 import { OrdersController } from './modules/gcdownload/orders/orders.controller';
 import { IOrdersService } from './modules/gcdownload/orders/orders.service.interface';
 import { OrdersService } from './modules/gcdownload/orders/orders.service';
+import { IOrdersRepository } from './modules/gcdownload/orders/orders.repository.interface';
+import { OrdersRepository } from './modules/gcdownload/orders/orders.repository';
 
 export interface IBootstrapReturn {
 	appContainer: Container;
@@ -46,6 +48,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope();
 	bind<IOrdersControllerInterface>(TYPES.OrdersController).to(OrdersController);
 	bind<IOrdersService>(TYPES.OrdersService).to(OrdersService);
+	bind<IOrdersRepository>(TYPES.OrdersRepository).to(OrdersRepository).inSingletonScope();
 	bind<IPurchasesControllerInterface>(TYPES.PurchasesController).to(PurchasesController);
 	bind<IPurchasesService>(TYPES.PurchasesService).to(PurchaseService);
 	bind<IPurchaseRepository>(TYPES.PurchasesRepository).to(PurchasesRepository).inSingletonScope();
