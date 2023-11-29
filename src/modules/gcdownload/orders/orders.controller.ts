@@ -26,7 +26,7 @@ export class OrdersController extends BaseController implements IOrdersControlle
 				try {
 					const exportId = await this.ordersService.createExportId(3, 5000);
 					if (exportId !== null) {
-						const 
+						const makeExport = await this.ordersService.makeExport(exportId);
 					}
 				} catch (error) {
 					console.error(error);

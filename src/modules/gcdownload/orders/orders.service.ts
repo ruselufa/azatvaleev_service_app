@@ -94,7 +94,18 @@ export class OrdersService implements IOrdersService {
 			throw error;
 		}
 	}
-	async requestExportData(): Promise<AxiosResponse> {
-		
+	async makeExport(exportId: number): Promise<AxiosResponse> {
+		const apiKey = this.configService.get('GC_API_KEY');
+		const PREFIX = this.configService.get('GC_PREFIX');
+		const result = await axios.get(`${PREFIX}/exports/${exportId}?key=${apiKey}`);
+		console.log(result);
+		return result;
+	}
+
+	async writeExportData(): Promise<OrderModel | null> {
+		// получаем данные из makeExport
+		// данные распарсиваем
+		// если цена продукта больше 0 ---> вызов репозитория OrderCreate
+		// если цена продукта равна 0 ---> вызов репозитория NullOrderCreate
 	}
 }
