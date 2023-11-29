@@ -20,21 +20,35 @@ export class OrdersController extends BaseController implements IOrdersControlle
 		super(loggerService);
 	}
 	async startCronJob(): Promise<void> {
-		this.cronJob = new CronJob(
-			'*/30 * * * * *',
-			async () => {
-				try {
-					const exportId = await this.ordersService.createExportId(3, 5000);
-					if (exportId !== null) {
-						const makeExport = await this.ordersService.makeExport(exportId);
-					}
-				} catch (error) {
-					console.error(error);
-				}
-			},
-			null,
-			true,
-		);
+		const exportId = 31107796;
+		if (exportId !== null) {
+			const exportData = await this.ordersService.makeExport(exportId);
+			await this.ordersService.writeExportData(exportData);
+			// console.log(exportData.data.info.fields);
+			// const dataItems: string[] = exportData.data.info.items;
+			// console.log(dataItems.length);
+			// const filteredArray = exportData.data.info.items[0].filter(
+			// 	(el: any, index: number) => index <= 24,
+			// );
+			// console.log(filteredArray);
+		}
+		// this.cronJob = new CronJob(
+		// 	'*/30 * * * * *',
+		// 	async () => {
+		// 		try {
+		// 			const exportId = await this.ordersService.createExportId(3, 600000);
+		// 			// const exportId = 31107796;
+		// 			if (exportId !== null) {
+		// 				const exportData = await this.ordersService.makeExport(exportId);
+		// 				await this.ordersService.writeExportData(exportData);
+		// 			}
+		// 		} catch (error) {
+		// 			console.error(error);
+		// 		}
+		// 	},
+		// 	null,
+		// 	true,
+		// );
 	}
 }
 

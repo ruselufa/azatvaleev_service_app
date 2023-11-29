@@ -11,6 +11,7 @@ import fs from 'fs';
 import { ILogger } from '../../../logger/logger.interface';
 import { IOrdersRepository } from './orders.repository.interface';
 import { ExportId } from './orders.exportid.entity';
+import { Order } from './orders.entity';
 
 @injectable()
 export class OrdersService implements IOrdersService {
@@ -98,12 +99,143 @@ export class OrdersService implements IOrdersService {
 		const apiKey = this.configService.get('GC_API_KEY');
 		const PREFIX = this.configService.get('GC_PREFIX');
 		const result = await axios.get(`${PREFIX}/exports/${exportId}?key=${apiKey}`);
-		console.log(result);
 		return result;
 	}
 
-	async writeExportData(): Promise<OrderModel | null> {
+	async writeExportData(data: AxiosResponse): Promise<OrderModel | null> {
 		// получаем данные из makeExport
+		const newData: string[][] = data.data.info.items;
+		const arrOfObjects = newData.map((item) => {
+			return {
+				idSystemGc: Number(item[0]),
+				idAzatGc: Number(item[1]),
+				idUserGc: Number(item[2]),
+				userName: item[3],
+				userEmail: item[4],
+				userPhone: item[5],
+				createdAt: item[6],
+				payedAt: item[7],
+				orderName: item[8],
+				dealStatus: item[9],
+				price: Number(item[10]),
+				payedPrice: Number(item[11]),
+				payFee: Number(item[12]),
+				income: Number(item[13]),
+				taxes: Number(item[14]),
+				profit: Number(item[15]),
+				otherFee: Number(item[16]),
+				netProfit: Number(item[17]),
+				managerName: item[19],
+				city: item[20],
+				payedBy: item[21],
+				promocodeUsed: item[23],
+				promoCompany: item[24],
+				utmSource: item[46],
+				utmMedium: item[47],
+				utmCampaign: item[48],
+				utmContent: item[49],
+				utmTerm: item[50],
+				utmGroup: item[51],
+				workWithOrder: item[25],
+				orderComments: item[26],
+				rejectReason: item[27],
+				orderTag: JSON.stringify(item[62]).replace(/[[\]]/g, ''),
+			};
+		});
+
+		arrOfObjects.map(
+			async ({
+				idSystemGc,
+				idAzatGc,
+				idUserGc,
+				userName,
+				userEmail,
+				userPhone,
+				createdAt,
+				payedAt,
+				orderName,
+				dealStatus,
+				price,
+				payedPrice,
+				payFee,
+				income,
+				taxes,
+				profit,
+				otherFee,
+				netProfit,
+				managerName,
+				city,
+				payedBy,
+				promocodeUsed,
+				promoCompany,
+				utmSource,
+				utmMedium,
+				utmCampaign,
+				utmContent,
+				utmTerm,
+				utmGroup,
+				workWithOrder,
+				orderComments,
+				rejectReason,
+				orderTag,
+			}) => {
+				const newOrder = new Order(
+					idSystemGc,
+					idAzatGc,
+					idUserGc,
+					userName,
+					userEmail,
+					userPhone,
+					createdAt,
+					payedAt,
+					orderName,
+					dealStatus,
+					price,
+					payedPrice,
+					payFee,
+					income,
+					taxes,
+					profit,
+					otherFee,
+					netProfit,
+					managerName,
+					city,
+					payedBy,
+					promocodeUsed,
+					promoCompany,
+					utmSource,
+					utmMedium,
+					utmCampaign,
+					utmContent,
+					utmTerm,
+					utmGroup,
+					workWithOrder,
+					orderComments,
+					rejectReason,
+					orderTag,
+				);
+				if (newOrder.price === 0) {
+					const existedOrder = await this.ordersRepository.findNullOrderDb(newOrder.idSystemGc);
+					if (existedOrder) {
+						this.loggerService.log('Такой 0 заказ существует, обновляем данные');
+						this.ordersRepository.updateNullOrderDb(existedOrder.id, newOrder);
+					} else {
+						this.loggerService.log('Такого 0 заказа нет, создаем новый');
+						this.ordersRepository.createNullOrderDb(newOrder);
+					}
+				} else {
+					const existedOrder = await this.ordersRepository.findOrderDb(newOrder.idSystemGc);
+					if (existedOrder) {
+						this.loggerService.log('Такой заказ существует, обновляем данные');
+						this.ordersRepository.updateOrderDb(existedOrder.id, newOrder);
+					} else {
+						this.loggerService.log('Такого заказа нет, создаем новый');
+						this.ordersRepository.createOrderDb(newOrder);
+					}
+				}
+			},
+		);
+		return null;
 		// данные распарсиваем
 		// если цена продукта больше 0 ---> вызов репозитория OrderCreate
 		// если цена продукта равна 0 ---> вызов репозитория NullOrderCreate

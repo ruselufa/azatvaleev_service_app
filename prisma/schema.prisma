@@ -60,28 +60,36 @@ model OrderModel {
   idSystemGc    Int
   idAzatGc      Int
   idUserGc      Int
-  user_id       Int
+  userName      String
   userEmail     String
   userPhone     String
   createdAt     String
   payedAt       String
   orderName     String
   dealStatus    String
-  price         String
-  payedPrice    String
-  payFee        String
-  income        String
-  taxes         String
-  profit        String
-  otherFee      String
-  netProfit     String
-  currency      String
+  price         Float
+  payedPrice    Float
+  payFee        Float
+  income        Float
+  taxes         Float
+  profit        Float
+  otherFee      Float
+  netProfit     Float
   managerName   String
   city          String
   payedBy       String
-  partnerId     String
   promocodeUsed String
   promoCompany  String
+  utmSource     String
+  utmMedium     String
+  utmCampaign   String
+  utmContent    String
+  utmTerm       String
+  utmGroup      String
+  workWithOrder String
+  orderComments String
+  rejectReason  String
+  orderTag      String
 }
 
 model NullOrderModel {
@@ -89,28 +97,36 @@ model NullOrderModel {
   idSystemGc    Int
   idAzatGc      Int
   idUserGc      Int
-  user_id       Int
+  userName      String
   userEmail     String
   userPhone     String
   createdAt     String
   payedAt       String
   orderName     String
   dealStatus    String
-  price         String
-  payedPrice    String
-  payFee        String
-  income        String
-  taxes         String
-  profit        String
-  otherFee      String
-  netProfit     String
-  currency      String
+  price         Float
+  payedPrice    Float
+  payFee        Float
+  income        Float
+  taxes         Float
+  profit        Float
+  otherFee      Float
+  netProfit     Float
   managerName   String
   city          String
   payedBy       String
-  partnerId     String
   promocodeUsed String
   promoCompany  String
+  utmSource     String
+  utmMedium     String
+  utmCampaign   String
+  utmContent    String
+  utmTerm       String
+  utmGroup      String
+  workWithOrder String
+  orderComments String
+  rejectReason  String
+  orderTag      String
 }
 
 model ExportModel {
