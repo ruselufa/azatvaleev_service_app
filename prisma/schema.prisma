@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider          = "postgresql"
-  url               = "postgresql://amber:VZizwWS8NPgu@master.ddb2bc2c-b9c8-4cd7-bafd-8b21e116dcdf.c.dbaas.selcloud.ru:5432/distributionbot"
-  shadowDatabaseUrl = "postgresql://amber:VZizwWS8NPgu@master.ddb2bc2c-b9c8-4cd7-bafd-8b21e116dcdf.c.dbaas.selcloud.ru:5432/distributionbot"
+  url               = "postgresql://amber:VZizwWS8NPgu@master.ddb2bc2c-b9c8-4cd7-bafd-8b21e116dcdf.c.dbaas.selcloud.ru:5432/distributionbot?pgbouncer=true"
+  shadowDatabaseUrl = "postgresql://amber:VZizwWS8NPgu@master.ddb2bc2c-b9c8-4cd7-bafd-8b21e116dcdf.c.dbaas.selcloud.ru:5432/distributionbot?pgbouncer=true"
 }
 
 model UserModel {
