@@ -8,9 +8,11 @@ export interface IOrdersService {
 	createExportId: (maxRetries: number, delayMs: number) => Promise<number | null>;
 	createOrder: (order: OrderCreateDto) => Promise<OrderModel | null>;
 	updateOrder: (order: OrderCreateDto) => Promise<OrderModel | null>;
-	requestExportId: () => Promise<AxiosResponse>;
-	makeExport: (exportId: number) => Promise<AxiosResponse>;
+	requestExportId: () => Promise<AxiosResponse | undefined>;
+	makeExport: (exportId: number) => Promise<AxiosResponse | undefined>;
 	writeExportData: (data: AxiosResponse) => Promise<OrderModel | null>;
+	findStatusExportTask: (status: string) => Promise<ExportModel[] | []>;
+	updateExportId: (id: number, status: string) => Promise<ExportModel>;
 }
 
 export interface ApiResponse {

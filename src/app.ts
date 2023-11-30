@@ -42,7 +42,8 @@ export class App {
 		this.app.use('/users', this.userController.router);
 		this.app.use('/api/purchases', this.purchasesController.router);
 		this.app.use('/api/enkod', this.usersEnkodController.router);
-		this.ordersController.startCronJob();
+		this.ordersController.requireExportId();
+		this.ordersController.exportOrders();
 	}
 	useExceptionFilters(): void {
 		this.app.use(this.exceptionFilter.catch.bind(this.exceptionFilter));

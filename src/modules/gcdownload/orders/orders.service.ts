@@ -25,8 +25,10 @@ export class OrdersService implements IOrdersService {
 		// - аксиосом сделать запрос в геткурс через апи ключ
 		// - ответ JSON сохранить в БД
 		try {
-			console.log('Запрос на геткурс');
 			const response = await this.requestExportId();
+			if (!response) {
+				throw new Error('Не выгружен файл экспорта');
+			}
 			if (!response.data.success) {
 				if (maxRetries > 0) {
 					await new Promise((resolve) => setTimeout(resolve, delayMs));
@@ -37,46 +39,30 @@ export class OrdersService implements IOrdersService {
 					return null;
 				}
 			}
-			console.log('Получили данные');
 			const data = response.data;
-			console.log(data);
 			const newExport = new ExportId(
 				'Экспорт заказов Азат',
 				data.info.export_id,
-				'readytoexport',
+				'creating',
 				new Date(),
 				new Date(),
 			);
-			console.log(newExport);
-			console.log('Создаем выгрузку в БД');
 			await this.ordersRepository.createExportIdDb(newExport);
 			return data.info.export_id;
 		} catch (error) {
 			throw new Error('Max retries exceeded');
 		}
-
-		// fs.writeFile('response.json', JSON.stringify(response.data), (err) => {
-		// 	if (err) {
-		// 		console.error('Ошибка при записи в файл: ', err);
-		// 	} else {
-		// 		console.log('Ответ успешно сохранен в файл response.json');
-		// 	}
-		// });
-
-		// - сохранить отдельно айди выгрузки, если нет ошибок
-		// - через 1 час сделать запрос на скачивание выгрузки - чтение из базы последнего айди
-		// - сохранить ответ JSON в файл
-		// - распарсить JSON в базу данных заказов, (нулевые закинуть в отдельную таблицу NullOrdersModel)
-		// дождать вып функции и записать ответ в базу данных
 		return null;
 	}
 	async createOrder(order: OrderCreateDto): Promise<OrderModel | null> {
 		return null;
 	}
+
 	async updateOrder(order: OrderCreateDto): Promise<OrderModel | null> {
 		return null;
 	}
-	async requestExportId(): Promise<AxiosResponse> {
+
+	async requestExportId(): Promise<AxiosResponse | undefined> {
 		try {
 			const apiKey = this.configService.get('GC_API_KEY');
 			const PREFIX = this.configService.get('GC_PREFIX');
@@ -88,17 +74,43 @@ export class OrdersService implements IOrdersService {
 			const result = await axios.get(
 				`${PREFIX}/deals/?key=${apiKey}&created_at[from]=${agoDateGc}&created_at[to]=${nowDateGc}`,
 			);
-			// console.log(result);
 			return result;
 		} catch (error) {
-			console.error('An error occurred in requestExportId:', error);
-			throw error;
+			this.loggerService.error('An error occurred in requestExportId:', error);
+			return;
 		}
 	}
-	async makeExport(exportId: number): Promise<AxiosResponse> {
-		const apiKey = this.configService.get('GC_API_KEY');
-		const PREFIX = this.configService.get('GC_PREFIX');
-		const result = await axios.get(`${PREFIX}/exports/${exportId}?key=${apiKey}`);
+
+	async makeExport(exportId: number): Promise<AxiosResponse | undefined> {
+		try {
+			const apiKey = this.configService.get('GC_API_KEY');
+			const PREFIX = this.configService.get('GC_PREFIX');
+			const startExport = await this.ordersRepository.findExportIdDb(exportId);
+			if (startExport === null) {
+				throw new Error('Не найден ID экспорта в репозитории');
+			}
+			const result = await axios.get(`${PREFIX}/exports/${exportId}?key=${apiKey}`);
+			if (result.data.error && result.data.error_code === 910) {
+				await this.updateExportId(startExport.id, 'bad_export_id');
+				throw new Error('Файл не создан, попробуйте другой фильтр');
+			}
+			return result;
+		} catch (error) {
+			this.loggerService.error(error);
+			return undefined;
+		}
+	}
+
+	async findStatusExportTask(status: string): Promise<ExportModel[] | []> {
+		const findedExport = await this.ordersRepository.findStatusExportId(status);
+		if (findedExport.length === 0) {
+			return [];
+		}
+		return findedExport;
+	}
+
+	async updateExportId(id: number, status: string): Promise<ExportModel> {
+		const result = await this.ordersRepository.updateStatusExportId(id, status);
 		return result;
 	}
 

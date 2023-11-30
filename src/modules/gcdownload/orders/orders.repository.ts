@@ -26,6 +26,24 @@ export class OrdersRepository implements IOrdersRepository {
 			},
 		});
 	}
+	async findStatusExportId(status: string): Promise<ExportModel[] | []> {
+		return this.prismaService.client.exportModel.findMany({
+			where: {
+				status: `${status}`,
+			},
+		});
+	}
+	async updateStatusExportId(id: number, status: string): Promise<ExportModel> {
+		return this.prismaService.client.exportModel.update({
+			where: {
+				id,
+			},
+			data: {
+				status: `${status}`,
+				finishedDate: new Date(),
+			},
+		});
+	}
 	async findExportIdDb(gcId: number): Promise<ExportModel | null> {
 		return this.prismaService.client.exportModel.findFirst({
 			where: {

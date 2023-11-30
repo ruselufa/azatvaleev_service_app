@@ -19,36 +19,74 @@ export class OrdersController extends BaseController implements IOrdersControlle
 	) {
 		super(loggerService);
 	}
-	async startCronJob(): Promise<void> {
-		const exportId = 31107796;
-		if (exportId !== null) {
-			const exportData = await this.ordersService.makeExport(exportId);
-			await this.ordersService.writeExportData(exportData);
-			// console.log(exportData.data.info.fields);
-			// const dataItems: string[] = exportData.data.info.items;
-			// console.log(dataItems.length);
-			// const filteredArray = exportData.data.info.items[0].filter(
-			// 	(el: any, index: number) => index <= 24,
-			// );
-			// console.log(filteredArray);
-		}
-		// this.cronJob = new CronJob(
-		// 	'*/30 * * * * *',
-		// 	async () => {
-		// 		try {
-		// 			const exportId = await this.ordersService.createExportId(3, 600000);
-		// 			// const exportId = 31107796;
-		// 			if (exportId !== null) {
-		// 				const exportData = await this.ordersService.makeExport(exportId);
-		// 				await this.ordersService.writeExportData(exportData);
-		// 			}
-		// 		} catch (error) {
-		// 			console.error(error);
-		// 		}
-		// 	},
-		// 	null,
-		// 	true,
-		// );
+	async requireExportId(): Promise<void> {
+		// const exportId = 31107796;
+		// if (exportId !== null) {
+		// 	const exportData = await this.ordersService.makeExport(exportId);
+		// 	await this.ordersService.writeExportData(exportData);
+		// }
+		this.cronJob = new CronJob(
+			'30 19 23 * * *',
+			async () => {
+				try {
+					this.loggerService.log(
+						'Создаем ID экспорта запросов в геткурс и записываем в БД экспортов',
+					);
+					// Создаем ID экспорта запросов в геткурс и записываем в БД экспортов
+					await this.ordersService.createExportId(3, 600000);
+					// const exportId = 31107796;
+					// Получаем этот Export ID и передаем его дальше
+					this.loggerService.log('Записали экспорты в БД');
+				} catch (error) {
+					console.error(error);
+				}
+			},
+			null,
+			true,
+			'Asia/Yekaterinburg',
+		);
+	}
+	async exportOrders(): Promise<void> {
+		// Запускаем задачу по загрузке всех готовых экспортов в таблицу
+		this.cronJob = new CronJob(
+			'30 41 23 * * *',
+			async () => {
+				try {
+					this.loggerService.log('Начинаю поиск готовых экспортов');
+					// Читаем из БД первый экспорт со статусом creating
+					const findedExports = await this.ordersService.findStatusExportTask('creating');
+					this.loggerService.log(typeof findedExports);
+					// Экспортируем данные из этого экспорта
+					if (findedExports.length === 0) {
+						throw new Error('Не найден экспорт со статусом [creating]');
+						// Если Export ID существует, то запрашиваем данные и экспортруем файл
+						// После экспорта обновляем в таблице что этот ExportID экспортирован и записан в таблицу
+					}
+					findedExports.forEach(async (findedExportItem) => {
+						this.loggerService.log('Пробегаемся по готовым экспортам');
+						try {
+							const exportData = await this.ordersService.makeExport(findedExportItem.gcId);
+							if (!exportData) {
+								throw new Error('Не получены данные экспорта из Getcourse');
+							}
+							this.loggerService.log('Записываем заказы в БД');
+							await this.ordersService.writeExportData(exportData);
+							this.loggerService.log('Изменяем статус экспорта в [exported]');
+							await this.ordersService.updateExportId(findedExportItem.id, 'exported');
+						} catch (error) {
+							this.loggerService.error(error);
+							return;
+						}
+					});
+				} catch (error) {
+					this.loggerService.log(error);
+					return;
+				}
+			},
+			null,
+			true,
+			'Asia/Yekaterinburg',
+		);
 	}
 }
 
