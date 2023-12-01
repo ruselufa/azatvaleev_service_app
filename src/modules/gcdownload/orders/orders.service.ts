@@ -105,129 +105,144 @@ export class OrdersService implements IOrdersService {
 	}
 
 	async findStatusExportTask(status: string): Promise<ExportModel[] | []> {
-		const findedExport = await this.ordersRepository.findStatusExportId(status);
-		if (findedExport.length === 0) {
+		try {
+			const findedExport = await this.ordersRepository.findStatusExportId(status);
+			if (findedExport.length === 0) {
+				return [];
+			}
+			return findedExport;
+		} catch (error) {
+			this.loggerService.error('Error in updateExportId: ', error);
 			return [];
 		}
-		return findedExport;
 	}
 
-	async updateExportId(id: number, status: string): Promise<ExportModel> {
-		const result = await this.ordersRepository.updateStatusExportId(id, status);
-		return result;
+	async updateExportId(id: number, status: string): Promise<ExportModel | null> {
+		try {
+			const result = await this.ordersRepository.updateStatusExportId(id, status);
+			return result;
+		} catch (error) {
+			this.loggerService.error('Error in updateExportId: ', error);
+			return null;
+		}
 	}
 	async writeExportData(data: AxiosResponse): Promise<OrderModel | null> {
-		// получаем данные из makeExport
-		const newData: string[][] = data.data.info.items;
-		const nullArrOfObjects: any[] = [];
-		const realArrOfObjects: any[] = [];
-		newData.forEach((item) => {
-			if (Number(item[10]) === 0) {
-				nullArrOfObjects.push({
-					idSystemGc: Number(item[0]),
-					idAzatGc: Number(item[1]),
-					idUserGc: Number(item[2]),
-					userName: item[3],
-					userEmail: item[4],
-					userPhone: item[5],
-					createdAt: item[6],
-					payedAt: item[7],
-					orderName: item[8],
-					dealStatus: item[9],
-					price: Number(item[10]),
-					payedPrice: Number(item[11]),
-					payFee: Number(item[12]),
-					income: Number(item[13]),
-					taxes: Number(item[14]),
-					profit: Number(item[15]),
-					otherFee: Number(item[16]),
-					netProfit: Number(item[17]),
-					managerName: item[19],
-					city: item[20],
-					payedBy: item[21],
-					promocodeUsed: item[23],
-					promoCompany: item[24],
-					utmSource: item[46],
-					utmMedium: item[47],
-					utmCampaign: item[48],
-					utmContent: item[49],
-					utmTerm: item[50],
-					utmGroup: item[51],
-					workWithOrder: item[25],
-					orderComments: item[26],
-					rejectReason: item[27],
-					orderTag: JSON.stringify(item[62]).replace(/[[\]]/g, ''),
+		try {
+			// получаем данные из makeExport
+			const newData: string[][] = data.data.info.items;
+			const nullArrOfObjects: any[] = [];
+			const realArrOfObjects: any[] = [];
+			newData.forEach((item) => {
+				if (Number(item[10]) === 0) {
+					nullArrOfObjects.push({
+						idSystemGc: Number(item[0]),
+						idAzatGc: Number(item[1]),
+						idUserGc: Number(item[2]),
+						userName: item[3],
+						userEmail: item[4],
+						userPhone: item[5],
+						createdAt: item[6],
+						payedAt: item[7],
+						orderName: item[8],
+						dealStatus: item[9],
+						price: Number(item[10]),
+						payedPrice: Number(item[11]),
+						payFee: Number(item[12]),
+						income: Number(item[13]),
+						taxes: Number(item[14]),
+						profit: Number(item[15]),
+						otherFee: Number(item[16]),
+						netProfit: Number(item[17]),
+						managerName: item[19],
+						city: item[20],
+						payedBy: item[21],
+						promocodeUsed: item[23],
+						promoCompany: item[24],
+						utmSource: item[46],
+						utmMedium: item[47],
+						utmCampaign: item[48],
+						utmContent: item[49],
+						utmTerm: item[50],
+						utmGroup: item[51],
+						workWithOrder: item[25],
+						orderComments: item[26],
+						rejectReason: item[27],
+						orderTag: JSON.stringify(item[62]).replace(/[[\]]/g, ''),
+					});
+				} else {
+					realArrOfObjects.push({
+						idSystemGc: Number(item[0]),
+						idAzatGc: Number(item[1]),
+						idUserGc: Number(item[2]),
+						userName: item[3],
+						userEmail: item[4],
+						userPhone: item[5],
+						createdAt: item[6],
+						payedAt: item[7],
+						orderName: item[8],
+						dealStatus: item[9],
+						price: Number(item[10]),
+						payedPrice: Number(item[11]),
+						payFee: Number(item[12]),
+						income: Number(item[13]),
+						taxes: Number(item[14]),
+						profit: Number(item[15]),
+						otherFee: Number(item[16]),
+						netProfit: Number(item[17]),
+						managerName: item[19],
+						city: item[20],
+						payedBy: item[21],
+						promocodeUsed: item[23],
+						promoCompany: item[24],
+						utmSource: item[46],
+						utmMedium: item[47],
+						utmCampaign: item[48],
+						utmContent: item[49],
+						utmTerm: item[50],
+						utmGroup: item[51],
+						workWithOrder: item[25],
+						orderComments: item[26],
+						rejectReason: item[27],
+						orderTag: JSON.stringify(item[62]).replace(/[[\]]/g, ''),
+					});
+				}
+			});
+			this.loggerService.log('Количество обычных заказов: ', realArrOfObjects.length);
+			this.loggerService.log('Количество нулевых заказов: ', nullArrOfObjects.length);
+			const batchSize = 100;
+
+			for (let i = 0; i < nullArrOfObjects.length; i += batchSize) {
+				const batch = nullArrOfObjects.slice(i, i + batchSize);
+				const promises = batch.map(async (item: Order) => {
+					const existingItem = await this.ordersRepository.findNullOrderDb(item.idSystemGc);
+					if (existingItem) {
+						await this.ordersRepository.updateNullOrderDb(existingItem.id, item);
+					} else {
+						await this.ordersRepository.createNullOrderDb(item);
+					}
 				});
-			} else {
-				realArrOfObjects.push({
-					idSystemGc: Number(item[0]),
-					idAzatGc: Number(item[1]),
-					idUserGc: Number(item[2]),
-					userName: item[3],
-					userEmail: item[4],
-					userPhone: item[5],
-					createdAt: item[6],
-					payedAt: item[7],
-					orderName: item[8],
-					dealStatus: item[9],
-					price: Number(item[10]),
-					payedPrice: Number(item[11]),
-					payFee: Number(item[12]),
-					income: Number(item[13]),
-					taxes: Number(item[14]),
-					profit: Number(item[15]),
-					otherFee: Number(item[16]),
-					netProfit: Number(item[17]),
-					managerName: item[19],
-					city: item[20],
-					payedBy: item[21],
-					promocodeUsed: item[23],
-					promoCompany: item[24],
-					utmSource: item[46],
-					utmMedium: item[47],
-					utmCampaign: item[48],
-					utmContent: item[49],
-					utmTerm: item[50],
-					utmGroup: item[51],
-					workWithOrder: item[25],
-					orderComments: item[26],
-					rejectReason: item[27],
-					orderTag: JSON.stringify(item[62]).replace(/[[\]]/g, ''),
-				});
+				await Promise.all(promises);
+				this.loggerService.log('Processed batch of null orders: ', i);
 			}
-		});
-		this.loggerService.log('Количество обычных заказов: ', realArrOfObjects.length);
-		this.loggerService.log('Количество нулевых заказов: ', nullArrOfObjects.length);
-		const batchSize = 100;
 
-		for (let i = 0; i < nullArrOfObjects.length; i += batchSize) {
-			const batch = nullArrOfObjects.slice(i, i + batchSize);
-			const promises = batch.map(async (item: Order) => {
-				const existingItem = await this.ordersRepository.findNullOrderDb(item.idSystemGc);
-				if (existingItem) {
-					await this.ordersRepository.updateNullOrderDb(existingItem.id, item);
-				} else {
-					await this.ordersRepository.createNullOrderDb(item);
-				}
-			});
-			await Promise.all(promises);
-			this.loggerService.log('Processed batch of null orders: ', i);
+			for (let i = 0; i < realArrOfObjects.length; i += batchSize) {
+				const batch = realArrOfObjects.slice(i, i + batchSize);
+				const promises = batch.map(async (item: Order) => {
+					const existingItem = await this.ordersRepository.findOrderDb(item.idSystemGc);
+					if (existingItem) {
+						await this.ordersRepository.updateOrderDb(existingItem.id, item);
+					} else {
+						await this.ordersRepository.createOrderDb(item);
+					}
+				});
+				await Promise.all(promises);
+				this.loggerService.log('Processed batch of ordinary orders: ', i);
+			}
+			return null;
+		} catch (error) {
+			this.loggerService.error('Error in writeExportData: ', error);
+			return null;
 		}
-
-		for (let i = 0; i < realArrOfObjects.length; i += batchSize) {
-			const batch = realArrOfObjects.slice(i, i + batchSize);
-			const promises = batch.map(async (item: Order) => {
-				const existingItem = await this.ordersRepository.findOrderDb(item.idSystemGc);
-				if (existingItem) {
-					await this.ordersRepository.updateOrderDb(existingItem.id, item);
-				} else {
-					await this.ordersRepository.createOrderDb(item);
-				}
-			});
-			await Promise.all(promises);
-			this.loggerService.log('Processed batch of ordinary orders: ', i);
-		}
-		return null;
 	}
 	// async writeExportData(data: AxiosResponse): Promise<OrderModel | null> {
 	// 	// получаем данные из makeExport

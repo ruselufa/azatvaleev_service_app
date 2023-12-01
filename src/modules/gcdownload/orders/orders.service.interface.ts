@@ -12,7 +12,7 @@ export interface IOrdersService {
 	makeExport: (exportId: number) => Promise<AxiosResponse | undefined>;
 	writeExportData: (data: AxiosResponse) => Promise<OrderModel | null>;
 	findStatusExportTask: (status: string) => Promise<ExportModel[] | []>;
-	updateExportId: (id: number, status: string) => Promise<ExportModel>;
+	updateExportId: (id: number, status: string) => Promise<ExportModel | null>;
 }
 
 export interface ApiResponse {
