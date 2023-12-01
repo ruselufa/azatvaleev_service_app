@@ -49,7 +49,7 @@ export class OrdersController extends BaseController implements IOrdersControlle
 	async exportOrders(): Promise<void> {
 		// Запускаем задачу по загрузке всех готовых экспортов в таблицу
 		this.cronJob = new CronJob(
-			'05 04 03 * * *',
+			'35 48 03 * * *',
 			async () => {
 				try {
 					this.loggerService.log('Начинаю поиск готовых экспортов');
