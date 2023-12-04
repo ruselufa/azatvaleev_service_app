@@ -26,7 +26,7 @@ export class OrdersController extends BaseController implements IOrdersControlle
 		// 	await this.ordersService.writeExportData(exportData);
 		// }
 		this.cronJob = new CronJob(
-			'30 25 11 * * *',
+			'15 0 1,13 * * *',
 			async () => {
 				try {
 					this.loggerService.log(
@@ -49,7 +49,7 @@ export class OrdersController extends BaseController implements IOrdersControlle
 	async exportOrders(): Promise<void> {
 		// Запускаем задачу по загрузке всех готовых экспортов в таблицу
 		this.cronJob = new CronJob(
-			'20 30 14 * * *',
+			'15 0 7,19 * * *',
 			async () => {
 				try {
 					this.loggerService.log('Начинаю поиск готовых экспортов');

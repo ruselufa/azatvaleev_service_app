@@ -39,6 +39,7 @@ export class OrdersService implements IOrdersService {
 					return null;
 				}
 			}
+			console.log(response.data);
 			const data = response.data;
 			const newExport = new ExportId(
 				'Экспорт заказов Азат',
@@ -50,7 +51,7 @@ export class OrdersService implements IOrdersService {
 			await this.ordersRepository.createExportIdDb(newExport);
 			return data.info.export_id;
 		} catch (error) {
-			throw new Error('Max retries exceeded');
+			this.loggerService.error('Ошибка обработки: ', error);
 		}
 		return null;
 	}
@@ -134,6 +135,7 @@ export class OrdersService implements IOrdersService {
 			const realArrOfObjects: any[] = [];
 			newData.forEach((item) => {
 				if (Number(item[10]) === 0) {
+					const tagItemIndex = item.length - 2;
 					nullArrOfObjects.push({
 						idSystemGc: Number(item[0]),
 						idAzatGc: Number(item[1]),
@@ -167,9 +169,10 @@ export class OrdersService implements IOrdersService {
 						workWithOrder: item[25],
 						orderComments: item[26],
 						rejectReason: item[27],
-						orderTag: JSON.stringify(item[62]).replace(/[[\]]/g, ''),
+						orderTag: JSON.stringify(item[tagItemIndex]).replace(/[[\]]/g, ''),
 					});
 				} else {
+					const tagItemIndex = item.length - 2;
 					realArrOfObjects.push({
 						idSystemGc: Number(item[0]),
 						idAzatGc: Number(item[1]),
@@ -203,7 +206,7 @@ export class OrdersService implements IOrdersService {
 						workWithOrder: item[25],
 						orderComments: item[26],
 						rejectReason: item[27],
-						orderTag: JSON.stringify(item[62]).replace(/[[\]]/g, ''),
+						orderTag: JSON.stringify(item[tagItemIndex]).replace(/[[\]]/g, ''),
 					});
 				}
 			});
