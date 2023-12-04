@@ -24,6 +24,13 @@ const OrdersRepositoryMock: IOrdersRepository = {
 	findNullOrderDb: jest.fn(),
 };
 
+const loggerServiceMock: ILogger = {
+	log: jest.fn(),
+	warn: jest.fn(),
+	error: jest.fn(),
+	logger: undefined,
+};
+
 const container = new Container();
 let configService: IConfigService;
 let ordersRepository: IOrdersRepository;
@@ -34,6 +41,7 @@ beforeAll(() => {
 	container.bind<IOrdersService>(TYPES.OrdersService).to(OrdersService);
 	container.bind<IConfigService>(TYPES.ConfigService).toConstantValue(ConfigServiceMock);
 	container.bind<IOrdersRepository>(TYPES.OrdersRepository).toConstantValue(OrdersRepositoryMock);
+	container.bind<ILogger>(TYPES.ILogger).toConstantValue(loggerServiceMock);
 
 	configService = container.get<IConfigService>(TYPES.ConfigService);
 	ordersRepository = container.get<IOrdersRepository>(TYPES.OrdersRepository);
