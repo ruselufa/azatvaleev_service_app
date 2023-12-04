@@ -69,7 +69,7 @@ export class OrdersService implements IOrdersService {
 			const PREFIX = this.configService.get('GC_PREFIX');
 			const now = new Date();
 			const quarterAgo = new Date(now);
-			quarterAgo.setDate(quarterAgo.getDate() - 1);
+			quarterAgo.setMonth(quarterAgo.getMonth() - 3);
 			const agoDateGc = quarterAgo.toISOString().split('T')[0];
 			const nowDateGc = now.toISOString().split('T')[0];
 			const result = await axios.get(
