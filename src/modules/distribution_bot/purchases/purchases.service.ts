@@ -85,7 +85,7 @@ export class PurchaseService implements IPurchasesService {
 					);
 				}
 			});
-			if (existedPurchase.state === 'Не началась' && newUser.state === 'Активна') {
+			if (existedPurchase.state !== newUser.state) {
 				console.log('Статус старой покупки', existedPurchase.state);
 				console.log('Статус новой покупки', newUser.state);
 				console.log('В старой покупке статус Не началась, а в новой - Активен');
