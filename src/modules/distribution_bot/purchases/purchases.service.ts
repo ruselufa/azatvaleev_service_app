@@ -85,6 +85,16 @@ export class PurchaseService implements IPurchasesService {
 					);
 				}
 			});
+			if (existedPurchase.period === 'Не началась' && newUser.period === 'Активна') {
+				console.log('В старой покупке статус Не началась, а в новой - Активен');
+				return this.purchaseRepository.updateFinishAt(
+					existedPurchase.id,
+					newUser.startAt,
+					newUser.finishAt,
+					newUser.purchase_ink,
+					newUser.state,
+				);
+			}
 			if (newPurchaseFinishDate === undefined || newPurchaseStartDate === undefined) {
 				console.log('В новой покупке нет даты окончания курса, не трогаем');
 				return null;
