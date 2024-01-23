@@ -36,10 +36,10 @@ export class PurchasesRepository implements IPurchaseRepository {
 		});
 	}
 
-	async find(email: string): Promise<PurchaseModel | null> {
+	async find(gcPurchaseId: number): Promise<PurchaseModel | null> {
 		return this.prismaService.client.purchaseModel.findFirst({
 			where: {
-				email,
+				gcPurchaseId,
 			},
 		});
 	}

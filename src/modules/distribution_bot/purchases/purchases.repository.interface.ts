@@ -4,7 +4,7 @@ import { Purchase } from './purchases.entity';
 
 export interface IPurchaseRepository {
 	create: (purchase: Purchase) => Promise<PurchaseModel>;
-	find: (email: string) => Promise<PurchaseModel | null>;
+	find: (gcPurchaseId: number) => Promise<PurchaseModel | null>;
 	updateFinishAt: (
 		id: number,
 		startAt: string,

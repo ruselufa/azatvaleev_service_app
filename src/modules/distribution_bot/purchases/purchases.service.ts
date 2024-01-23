@@ -37,7 +37,7 @@ export class PurchaseService implements IPurchasesService {
 			state,
 			purchase_ink,
 		);
-		const existedPurchase = await this.purchaseRepository.find(email);
+		const existedPurchase = await this.purchaseRepository.find(gcPurchaseId);
 		if (existedPurchase !== null) {
 			const month = [
 				'Янв',
