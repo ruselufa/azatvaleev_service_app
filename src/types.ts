@@ -16,4 +16,7 @@ export const TYPES = {
 	OrdersController: Symbol.for('OrdersController'),
 	OrdersService: Symbol.for('OrdersService'),
 	OrdersRepository: Symbol.for('OrdersRepository'),
+	GoogleSheetService: Symbol.for('GoogleSheetService'),
+	SalesControllerService: Symbol.for('SalessControllerService'),
+	SalesController: Symbol.for('SalesController'),
 };

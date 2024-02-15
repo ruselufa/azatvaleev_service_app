@@ -3,7 +3,10 @@ import { google } from 'googleapis';
 import * as fs from 'fs';
 import { OAuth2Client } from 'google-auth-library';
 import { ICredentials } from './credentials.interface';
+import { injectable } from 'inversify';
+import 'reflect-metadata';
 
+@injectable()
 export class GoogleSheetService {
 	private client: OAuth2Client;
 	private spreadsheetId: string;
@@ -12,10 +15,7 @@ export class GoogleSheetService {
 		try {
 			// Чтение учетных данных из файла JSON
 			const credentials: ICredentials = JSON.parse(
-				fs.readFileSync(
-					'C:/myLaptop/arman.js.programming/azatvaleev-work/getcourse-sales-id/src/sales/credentials.json',
-					'utf-8',
-				),
+				fs.readFileSync('./src/googlesheet/credentials.json', 'utf-8'),
 			);
 			// Аутентификация с использованием учетных данных
 			const auth = new google.auth.GoogleAuth({
@@ -35,7 +35,7 @@ export class GoogleSheetService {
 		}
 	}
 	//Метод инициализации клиента
-	private async initializeClient(auth: any) {
+	private async initializeClient(auth: any): Promise<void> {
 		try {
 			this.client = await auth.getClient();
 		} catch (error) {
@@ -43,13 +43,8 @@ export class GoogleSheetService {
 		}
 	}
 	//Метод проверки нового запроса на запись в таблицу
-	public async handleNewRequest(data: string[]) {
-		const spreadsheet = JSON.parse(
-			fs.readFileSync(
-				'C:/myLaptop/arman.js.programming/azatvaleev-work/getcourse-sales-id/src/sales/spreadsheet.json',
-				'utf-8',
-			),
-		);
+	public async handleNewRequest(data: string[]): Promise<void> {
+		const spreadsheet = JSON.parse(fs.readFileSync('./src/googlesheet/spreadsheet.json', 'utf-8'));
 		this.spreadsheetId = spreadsheet.spreadsheetId;
 		console.log(this.spreadsheetId);
 		//проверяем существует ли идентификатор таблицы
@@ -62,39 +57,32 @@ export class GoogleSheetService {
 			console.log(`Запись в существующую таблицу`);
 			this.writeDataToTable(data, this.spreadsheetId);
 		}
-		return this.spreadsheetId;
 	}
 	//Метод действия на завершение таймера
-	public async timerEnd() {
+	public async timerEnd(): Promise<void> {
 		const jsonSpreadFile = {
 			spreadsheetId: null,
 		};
 		this.updateTableId(jsonSpreadFile);
 	}
 	//Метод обновления ID таблицы
-	private async updateTableId(data: {}) {
+	private async updateTableId(data: {}): Promise<void> {
 		try {
 			// Чтение JSON файла
 			const spreadsheet = JSON.parse(
-				fs.readFileSync(
-					`C:/myLaptop/arman.js.programming/azatvaleev-work/getcourse-sales-id/src/sales/spreadsheet.json`,
-					'utf-8',
-				),
+				fs.readFileSync(`./src/googlesheet/spreadsheet.json`, 'utf-8'),
 			);
 			// Обновление данных в JSON объекте
 			spreadsheet.spreadsheet_id = data;
 			// Запись обновленных данных обратно в файл
-			fs.writeFileSync(
-				`C:/myLaptop/arman.js.programming/azatvaleev-work/getcourse-sales-id/src/sales/spreadsheet.json`,
-				JSON.stringify(data, null, 2),
-			);
+			fs.writeFileSync(`./src/googlesheet/spreadsheet.json`, JSON.stringify(data, null, 2));
 			console.log('JSON file updated successfully.');
 		} catch (error) {
 			console.error('Error updating JSON file:', error);
 		}
 	}
 	//Метод создания таблицы
-	public async createTable() {
+	public async createTable(): Promise<void> {
 		//создание гугл таблицы
 		console.log(`Создание новой таблицы...`);
 		// Создание клиента для доступа к API Google Sheets
@@ -137,10 +125,9 @@ export class GoogleSheetService {
 			spreadsheetId: spreadsheetId,
 		};
 		this.updateTableId(jsonSpreadFile);
-		return spreadsheetId;
 	}
 	//Метод записи в таблицу
-	public async writeDataToTable(data: string[], spreadsheetId: any) {
+	public async writeDataToTable(data: string[], spreadsheetId: any): Promise<void> {
 		const sheets = google.sheets({ version: 'v4', auth: this.client });
 		try {
 			// Диапазон в таблице, куда вы хотите добавить данные
@@ -162,7 +149,7 @@ export class GoogleSheetService {
 		}
 	}
 	//Метод чтения диапозона из таблицы. Необходимо передать ID таблицы и диапозон в формате 'Sheet1!A1:B10'
-	public async readDataFromTable(spreadsheetId: string, range: string) {
+	public async readDataFromTable(spreadsheetId: string, range: string): Promise<void> {
 		const sheets = google.sheets({ version: 'v4', auth: this.client });
 		try {
 			// Выполнение запроса на чтение данных
@@ -170,15 +157,12 @@ export class GoogleSheetService {
 				spreadsheetId,
 				range,
 			});
-			// Возвращаем полученные данные
-			return response.data;
 		} catch (error) {
 			console.error('Произошла ошибка при чтении данных из таблицы:', error);
-			return null; // В случае ошибки возвращаем null или другое значение по умолчанию
 		}
 	}
 	//Метод удаления таблицы. Необходимо указать ID таблицы. Удаляет основную страницу
-	public async deleteTable(spreadsheetId: string) {
+	public async deleteTable(spreadsheetId: string): Promise<void> {
 		const sheets = google.sheets({ version: 'v4', auth: this.client });
 		try {
 			// Выполнение запроса на удаление таблицы
@@ -200,7 +184,7 @@ export class GoogleSheetService {
 		}
 	}
 	//Метод удаления таблицы. Необходимо указать ID таблицы. Удаляет основную страницу
-	public async deleteDataFromTable(spreadsheetId: string, range: any) {
+	public async deleteDataFromTable(spreadsheetId: string, range: any): Promise<void> {
 		const sheets = google.sheets({ version: 'v4', auth: this.client });
 		try {
 			// Выполнение запроса на удаление таблицы
@@ -222,7 +206,11 @@ export class GoogleSheetService {
 		}
 	}
 	// Метод обновления данных в таблице
-	public async updateDataInTable(data: string[][], spreadsheetId: string, range: string) {
+	public async updateDataInTable(
+		data: string[][],
+		spreadsheetId: string,
+		range: string,
+	): Promise<void> {
 		const sheets = google.sheets({ version: 'v4', auth: this.client });
 		try {
 			// Очистка существующих данных
