@@ -1,5 +1,4 @@
 import { NextFunction, Response, Request, Router } from 'express';
-import { SaleCreateDto } from './dto/sales-create.dto';
 
 export interface IControllerId {
 	path: string;

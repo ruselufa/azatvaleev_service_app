@@ -31,6 +31,7 @@
     "googleapis": "^133.0.0",
     "inversify": "^6.0.2",
     "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
     "reflect-metadata": "^0.1.13",
     "tslog": "^4.9.2"
   },

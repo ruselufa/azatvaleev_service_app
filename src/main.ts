@@ -32,8 +32,8 @@ import { IOrdersService } from './modules/gcdownload/orders/orders.service.inter
 import { OrdersService } from './modules/gcdownload/orders/orders.service';
 import { IOrdersRepository } from './modules/gcdownload/orders/orders.repository.interface';
 import { OrdersRepository } from './modules/gcdownload/orders/orders.repository';
-import { GoogleSheetService } from './modules/googlesheet/googleSheet.service';
-import { SalesControllerService } from './modules/gcdownload/sales/sales.controller.service';
+import { GoogleSheetService } from './modules/googlesheet/googleSheet.repository';
+import { SalesService } from './modules/gcdownload/sales/sales.service';
 import { SalesController } from './modules/gcdownload/sales/sales.controller';
 
 export interface IBootstrapReturn {
@@ -47,7 +47,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
 	bind<IExceptionFilter>(TYPES.ExceptionFilter).to(ExceptionFilter);
 	bind<SalesController>(TYPES.SalesController).to(SalesController);
 	bind<GoogleSheetService>(TYPES.GoogleSheetService).to(GoogleSheetService);
-	bind<SalesControllerService>(TYPES.SalesControllerService).to(SalesControllerService);
+	bind<SalesService>(TYPES.SalesService).to(SalesService);
 	bind<IUserController>(TYPES.UserController).to(UserController);
 	bind<IUsersService>(TYPES.UserService).to(UserService);
 	bind<IUsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
