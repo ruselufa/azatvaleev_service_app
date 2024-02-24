@@ -11,7 +11,7 @@ export class GoogleSheetService {
 	client: OAuth2Client;
 	spreadsheetId: string;
 	constructor() {
-		const credentials: ICredentials = JSON.parse(fs.readFileSync('./credentials.json', 'utf-8'));
+		const credentials: ICredentials = JSON.parse(fs.readFileSync('credentials.json', 'utf-8'));
 		try {
 			// Аутентификация с использованием учетных данных
 			const auth = new google.auth.GoogleAuth({
@@ -41,49 +41,54 @@ export class GoogleSheetService {
 	// Проверка на существо таблицы
 	public async isTableExist(client: OAuth2Client): Promise<void> {
 		//Вызов метода инициализации клиента
-		const spreadsheet = JSON.parse(fs.readFileSync('./spreadsheet.json', 'utf-8'));
+		const spreadsheet = JSON.parse(fs.readFileSync('spreadsheet.json', 'utf-8'));
 		this.spreadsheetId = spreadsheet.spreadsheetId;
 		if (!this.spreadsheetId) {
 			this.createTable(client);
 		}
 	}
 	//Метод проверки нового запроса на запись в таблицу
-	public async handleNewRequest(): Promise<string> {
-		this.isTableExist(this.client);
-		// Проверяем, прошло ли уже 10 секунд с момента создания последней таблицы
+	public async handleNewRequest(): Promise<void> {
+		await this.isTableExist(this.client);
+		// Используем существующую таблицу
 		if (this.spreadsheetId !== null) {
-			// Используем существующую таблицу
 			console.log(
 				`Запись в существующую таблицу: https://docs.google.com/spreadsheets/d/${this.spreadsheetId}`,
 			);
 			await this.importCSVtoGoogleSheets(this.spreadsheetId);
 			try {
 				// Укорачиваем файл до нулевой длины, что очищает его содержимое
-				fs.unlinkSync('./src/sales/salesData.csv');
+				fs.unlinkSync('../gcdownload/sales/salesData.csv');
+				await this.timerEnd();
 				console.log('Файл CSV успешно удален');
 			} catch (error) {
 				console.error('Ошибка при удалении файла CSV:', error);
 			}
 		}
-		return this.spreadsheetId;
 	}
 	//Метод действия на завершение таймера
 	public async timerEnd(): Promise<void> {
 		const jsonSpreadFile = {
 			spreadsheetId: null,
 		};
-		this.updateTableId(jsonSpreadFile);
+		console.log('Table ID returned to null');
+		return this.updateTableId(jsonSpreadFile);
 	}
 	//Метод обновления ID таблицы
 	private async updateTableId(data: {}): Promise<void> {
 		try {
 			// Чтение JSON файла
-			const spreadsheet = JSON.parse(fs.readFileSync(`./spreadsheet.json`, 'utf-8'));
+			const spreadsheet = JSON.parse(fs.readFileSync(`spreadsheet.json`, 'utf-8'));
 			// Обновление данных в JSON объекте
 			spreadsheet.spreadsheet_id = data;
 			// Запись обновленных данных обратно в файл
-			fs.writeFileSync(`./spreadsheet.json`, JSON.stringify(data, null, 2));
+			fs.writeFileSync(`spreadsheet.json`, JSON.stringify(data, null, 2));
 			console.log('JSON file updated successfully.');
+			if (this.spreadsheetId !== null) {
+				console.log('Wait for the new request...');
+			} else {
+				await this.handleNewRequest();
+			}
 		} catch (error) {
 			console.error('Error updating JSON file:', error);
 		}
@@ -131,12 +136,12 @@ export class GoogleSheetService {
 		const jsonSpreadFile = {
 			spreadsheetId: spreadsheetId,
 		};
-		this.updateTableId(jsonSpreadFile);
+		return this.updateTableId(jsonSpreadFile);
 	}
 	//импорт csv в таблицу
 	public async importCSVtoGoogleSheets(spreadsheetId: any): Promise<void> {
 		const sheets = google.sheets({ version: 'v4', auth: await this.client });
-		const csvContent = fs.readFileSync('./src/sales/salesData.csv', 'utf-8');
+		const csvContent = fs.readFileSync('../gcdownload/sales/salesData.csv', 'utf-8');
 		try {
 			const response = await sheets.spreadsheets.values.append({
 				spreadsheetId: spreadsheetId, // ID вашего Google Sheets документа
@@ -151,6 +156,7 @@ export class GoogleSheetService {
 		} catch (error) {
 			console.error('Произошла ошибка:', error);
 		}
+		//this.timerEnd();
 	}
 	//Метод записи в таблицу
 	public async writeDataToTable(data: string[], spreadsheetId: any): Promise<void> {

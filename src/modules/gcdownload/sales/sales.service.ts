@@ -2,9 +2,9 @@ import { inject, injectable } from 'inversify';
 import { GoogleSheetService } from '../../googlesheet/googleSheet.repository';
 import { SaleCreateDto } from './dto/sales-create.dto';
 import moment from 'moment';
-import * as fs from 'fs';
-import { TYPES } from '../../../types';
 import 'reflect-metadata';
+import * as fs from 'fs';
+import { TYPES } from '../../../../src/types';
 
 @injectable()
 export class SalesService {
@@ -14,7 +14,7 @@ export class SalesService {
 	constructor(@inject(TYPES.GoogleSheetService) private googleSheetService: GoogleSheetService) {}
 
 	public async googleSheetsGetSalesData(data: SaleCreateDto): Promise<moment.Moment> {
-		const duration = moment.duration(5, 'seconds');
+		const duration = moment.duration(20, 'seconds');
 		// Установка времени окончания таймера на текущее время плюс указанную длительность
 		this.endTime = moment().add(duration);
 		// Если уже существует интервал таймера, он очищается
@@ -31,7 +31,7 @@ export class SalesService {
 						await this.googleSheetService.handleNewRequest(); // Вызываем метод обработки после завершения таймера
 					}
 					// Здесь таймер завершен, выполните код, который нужно выполнить после окончания таймера
-					console.log('Timer has ended');
+					console.log('[googleSheetsGetSalesData] Timer has ended');
 				}
 			}
 		}, 1000);
@@ -40,7 +40,7 @@ export class SalesService {
 			//Запуск процесса записи в таблицу
 			// const spreadsheetId = await this.googleSheetService.handleNewRequest([fullName, phone, id]);
 			const csvData: string[] = [];
-			const fileExists = fs.existsSync('./src/sales/salesData.csv');
+			const fileExists = fs.existsSync('salesData.csv');
 			// Проверка на существующий файл CSV
 			if (!fileExists) {
 				csvData.push('ID;Name;Price');
@@ -49,13 +49,13 @@ export class SalesService {
 			for (const entry of [data]) {
 				csvData.push(
 					`${'https://azatvaleev.getcourse.ru/sales/control/deal/update/id/' + entry.id};
-					${entry.fullname};
+					${entry.firstName};
 					${entry.phone}`,
 				);
 			}
 			// Добавляем новые строки в файл без перезаписи
 			try {
-				fs.appendFileSync('./src/sales/salesData.csv', csvData.join('\n') + '\n', 'utf-8');
+				fs.appendFileSync('salesData.csv', csvData.join('\n') + '\n', 'utf-8');
 				console.log('Данные успешно добавлены в файл sales.csv');
 			} catch (error) {
 				console.error('Ошибка при добавлении данных в файл:', error);
